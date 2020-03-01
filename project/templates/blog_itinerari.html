@@ -1,0 +1,19 @@
+{% extends "home.html" %}
+
+
+{% block blog_content %}
+<div class="blog_content scrollablePost">
+    <h1 style="text-align:center; margin:40px;"><b>I miei itinerari ...</b></h1>
+    <ul>
+          {% for i in range(itinerari|length) %}
+            <li><a href="{{url_for('main.caricaItinerario', indice=i)}}">{{itinerari[i]["titolo"]}} </a></li>
+            {% endfor %}
+
+
+    </ul>
+
+
+</div>
+<br>
+{% endblock %}
+

@@ -1,5 +1,17 @@
+#images, video and so on
+*.jpg
+*.JPG
+*.jpeg
+*.NEF
+*.png
+*.mpg
+*.mpeg
+*.ogg
+*.xlsx
+*.mp4
 
-.idea
+# project file
+.idea*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

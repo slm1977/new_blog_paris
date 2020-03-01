@@ -1,0 +1,157 @@
+<!doctype html>
+<!--[if lt IE 7 ]> <html lang="en" class="ie6"> <![endif]-->
+<!--[if IE 7 ]>    <html lang="en" class="ie7"> <![endif]-->
+<!--[if IE 8 ]>    <html lang="en" class="ie8"> <![endif]-->
+<!--[if IE 9 ]>    <html lang="en" class="ie9"> <![endif]-->
+
+<!-- https://stackoverflow.com/questions/16321456/absolute-position-after-zooming/16396598 -->
+
+<!--[if !IE]><!--> <html lang="en"> <!--<![endif]-->
+<head>
+<meta name="viewport" content="width = 1050, user-scalable = no" />
+
+<script type="text/javascript" src="{{ url_for('static', filename='extras/jquery.min.1.7.js') }}">
+</script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='extras/modernizr.2.5.3.min.js')}}">
+</script>
+
+	<style>
+		.myvideo {
+			  position: absolute;
+			  top: 100px;
+			  right: 200px;
+			  line-height: 25px;
+			  font-family: 'Indie Flower';
+			  overflow: hidden;
+			  outline: none;
+			}
+	</style>
+
+</head>
+<body>
+
+<div class="flipbook-viewport">
+
+
+	<div class="container">
+		<div class="flipbook">
+			{%for i in range(countRest) %}
+				<div style="background-image:url({{ url_for('static', filename='pages/%s_pagina_%s.png' % (quartiere,i) ) }}"></div>
+			{% endfor %}
+		</div>
+	</div>
+
+	<div class="myvideo" hidden>
+          {% if myvideo %}
+				<video width="100" controls>
+				  <source src={{myvideo}} type="video/mp4">
+				  Your browser does not support HTML5 video.
+				</video>
+			{% endif %}
+      </div>
+
+
+</div>
+
+
+
+<script type="text/javascript">
+
+function loadApp() {
+	console.log("richiamata loadApp...")
+	// Create the flipbook
+
+
+
+	$('.flipbook').turn({
+			// Width
+
+			width:922,
+			
+			// Height
+
+			height:600,
+
+			// Elevation
+
+			elevation: 50,
+			
+			// Enable gradients
+
+			gradients: true,
+			
+			// Auto center this flipbook
+
+			autoCenter: true
+
+	});
+
+	$(".flipbook").bind("turning",
+			function(event, page, obj){
+				console.log("Page "+ $(".flipbook").turn("animating"));
+				let size = $(".flipbook").turn("size");
+				let zoom = $(".flipbook").turn("zoom");
+				//alert("Size:::" + size.width + " Zoom:::" + zoom);
+				$( ".myvideo" ).hide();
+				});
+
+	$(".flipbook").bind("turned",
+			function(event, page, obj){
+				//alert("Page "+ page);
+				let top = 	$(".flipbook").turn("size").height-200;
+				let top_s = top + "px";
+				//$( ".myvideo" ).css({'top' : "50%"});
+				$( ".myvideo" ).show();
+				});
+
+
+
+
+
+	// Using arrow keys to turn the page
+
+	$(document).keydown(function(e){
+        console.log("Premuto tasto");
+		var previous = 37, next = 39, esc = 27;
+
+		switch (e.keyCode) {
+			case previous:
+
+				// left arrow
+				$('.flipbook').turn('previous');
+				e.preventDefault();
+
+			break;
+			case next:
+
+				//right arrow
+				$('.flipbook').turn('next');
+				e.preventDefault();
+
+			break;
+			case esc:
+
+				$('.flipbook-viewport').zoom('zoomOut');
+				e.preventDefault();
+
+			break;
+		}
+	});
+}
+
+
+// Load the HTML4 version if there's not CSS transform
+
+yepnope({
+	test : Modernizr.csstransforms,
+	yep:  ["{{ url_for('static', filename='lib/turn.js') }}"],
+	nope: ["{{ url_for('static', filename='lib/turn.html4.min.js') }}"],
+	both: ["{{ url_for('static', filename='css/basic.css') }}"],
+	complete: loadApp
+});
+
+</script>
+
+</body>
+</html>

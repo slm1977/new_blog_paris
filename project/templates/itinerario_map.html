@@ -1,0 +1,59 @@
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.0.1/dist/leaflet.js"></script>
+    <link href="https://unpkg.com/leaflet@1.0.1/dist/leaflet.css" rel="stylesheet"/>
+
+
+    <style>
+
+
+    table {
+          border-collapse: collapse;
+        }
+
+    table, th, td {
+        border: 1px solid black;
+        padding: 10px;
+
+
+        }
+
+      .titolo_itinerario {
+            max-width:150px;
+            min-width:60px;
+        }
+
+        .orari {
+            max-width:120px;
+        }
+
+        .biglietti {
+            max-width:80px;
+        }
+
+        .note {
+            max-width:200px;
+        }
+
+
+       /* Set the size of the div element that contains the map */
+      .osm-map {
+        height: 300px;  /* The height is 400 pixels */
+        width: 100%;  /* The width is the width of the web page */
+        padding: 20px;
+        margin-right: 20px;
+        margin-bottom: 20px;
+        margin-top: 20px;
+
+       }
+    </style>
+  </head>
+
+<body>
+<h1 style="text-align:center; margin:40px;"><b>{{itinerario["titolo"]}}</b></h1>
+{% for i in range (itinerario["tappe"]|length) %}
+    {% set itinerario_block = itinerario["tappe"][i] %}
+    {% set map_index = i %}
+   {% include "itinerario_blocco_map.html" %}
+{% endfor %}
+</body>

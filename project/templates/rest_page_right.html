@@ -1,0 +1,33 @@
+{% extends "base_restaurants_right.html" %}
+
+{% block intestazione %}
+   {{ rist["titolo"] }}
+{% endblock %}
+
+{% block indirizzo %}
+   {{ rist["indirizzo"] }}
+{% endblock %}
+
+{% block orari %}
+ {{ rist["orari"] }}
+{% endblock %}
+
+{% block caratteristiche %}
+ {{ rist["caratteristiche"] }}
+{% endblock %}
+
+
+{% block content %}
+{{ rist["descrizione"] }}
+{% endblock %}
+
+{% block video %}
+{% if myvideo %}
+
+<video width="100" controls>
+  <source src={{myvideo}} type="video/mp4">
+  Your browser does not support HTML5 video.
+</video>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,240 @@
+<!doctype html>
+<!--[if lt IE 7 ]> <html lang="en" class="ie6"> <![endif]-->
+<!--[if IE 7 ]>    <html lang="en" class="ie7"> <![endif]-->
+<!--[if IE 8 ]>    <html lang="en" class="ie8"> <![endif]-->
+<!--[if IE 9 ]>    <html lang="en" class="ie9"> <![endif]-->
+
+<!-- https://stackoverflow.com/questions/16321456/absolute-position-after-zooming/16396598 -->
+
+<!--[if !IE]><!--> <html lang="en"> <!--<![endif]-->
+<head>
+<meta name="viewport" content="width = 1050, user-scalable = no" />
+
+<script type="text/javascript" src="{{ url_for('static', filename='extras/jquery.min.1.7.js') }}">
+</script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='extras/modernizr.2.5.3.min.js')}}">
+</script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='lib/hash.js')}}">
+</script>
+
+
+</head>
+<body>
+
+<style>
+
+body{
+    background-color:transparent;
+}
+
+.parent {
+  position: relative;
+
+}
+.child {
+  position: absolute;
+  left: 200px; /* This is 200 pixels from the parents left side */
+  top: 200px; /* This is 200 pixels from the parents top side */
+}
+</style>
+
+<div class="flipbook-viewport">
+
+
+	<div class="container">
+		<div class="flipbook">
+
+			{%for i in range(2*countRest+1) %}
+			<div class="parent" id="{{quartiere}}_{{i}}" style="background-image:url({{ url_for('static', filename='pages/%s_pagina_%s.png' % (quartiere,i) ) }}">
+				{% if i>0 and i%2==0 %}
+				<div width="100%" style="position: absolute; height: 300px; bottom: 10px; left:40px">
+					<iframe src="{{url_for('static', filename='collage/index.html')}}"
+							style="display: block;margin-left: auto;margin-right: auto;width:"
+							width="100%" height="100%" frameBorder="0">
+					</iframe>
+				</div>
+				{% endif %}
+
+			</div>
+
+
+			{% endfor %}
+
+			<!--
+			{%for i in range(countRest) %}
+				<div>
+					<iframe id="pageContent" width="100%" height="100%" src='{{ url_for("main.restaurants", quartiere="marais", n=i) }}'> </iframe>
+				</div>
+			{% endfor %}
+			-->
+
+		</div>
+	</div>
+
+</div>
+
+
+
+<script type="text/javascript">
+
+function loadVideos()
+{
+  console.log("In load videos");
+ for (let i = 0; i< 0;  i++)
+ {
+  let pageId = "#" + "{{quartiere}}" + "_" + i;
+  //alert(pageId);
+  let pageElement = $(pageId)
+  videoTag = $('<video class="child" width="200" controls> Your browser does not support HTML5 video.</video>')
+        sourceTag = $('<source type="video/mp4">')
+        sourceTag.appendTo(videoTag);
+        videoTag.appendTo(pageElement);
+        sourceTag.load(function() {
+                console.log("Video caricato");
+				/*
+                videoTag.css({
+							position: absolute,
+							"margin-left": "200px", //Math.round(region.y/pageHeight*100)+'%',
+							left: "200px", //Math.round(region.x/pageWidth*100)+'%',
+							width: "200px", //Math.round(region.width/pageWidth*100)+'%',
+							//height: Math.round(region.height/pageHeight*100)+'%'
+						});
+				*/
+                videoTag.appendTo(pageElement);
+                });
+
+	// Load the video
+
+    sourceTag.attr('src', "{{url_for("static", filename="fotoblog/ristoranti/levieuxbelleville.mp4")}}");
+
+
+    options = $('.flipbook').turn('options'),
+		pageWidth = options.width/2,
+		pageHeight = options.height;
+
+
+
+    }
+}
+
+function loadApp() {
+	console.log("richiamata loadApp...")
+
+	var flipbook = $('.flipbook');
+
+ 	// Check if the CSS was already loaded
+
+	if (flipbook.width()==0 || flipbook.height()==0) {
+		setTimeout(loadApp, 10);
+		return;
+	}
+
+	// Create the flipbook
+
+	$('.flipbook').turn({
+			// Width
+
+			width:720,
+
+			// Height
+
+			height:440,
+
+			// Elevation
+
+			elevation: 50,
+
+			// The number of pages
+
+			pages: {{ countRest }},
+
+			// Enable gradients
+
+			gradients: true,
+
+			// Auto center this flipbook
+
+			autoCenter: true,
+
+	});
+
+
+
+	// Using arrow keys to turn the page
+
+	$(document).keydown(function(e){
+        console.log("Premuto tasto");
+		var previous = 37, next = 39, esc = 27;
+
+		switch (e.keyCode) {
+			case previous:
+
+				// left arrow
+				$('.flipbook').turn('previous');
+				e.preventDefault();
+
+			break;
+			case next:
+
+				//right arrow
+				$('.flipbook').turn('next');
+				e.preventDefault();
+
+			break;
+			case esc:
+
+				$('.flipbook-viewport').zoom('zoomOut');
+				e.preventDefault();
+
+			break;
+		}
+	});
+
+  // load videos
+  loadVideos()
+}
+
+
+function addPage(page, book) {
+		console.log("provo ad aggiungere un a pagina");
+		var id, pages = book.turn('pages');
+		console.log("Numero di pagine" + {{ countRest }});
+		// Create a new element for this page
+		var element = $('<div />', {});
+
+		// Add the page to the flipbook
+		if (book.turn('addPage', element, page)) {
+
+			// Add the initial HTML
+			// It will contain a loader indicator and a gradient
+			element.html('<div class="gradient"></div><div class="loader"></div>');
+
+			// Load the page
+			loadPage(page, element);
+			}
+
+		}
+
+function loadPage(page, pageElement) {
+    var content=$('<iframe id="pageContent" width="100%" height="100%" src="http://192.168.0.118:5000/marais/0/"> </iframe>');
+    content.appendTo(pageElement);
+	}
+
+
+
+
+// Load the HTML4 version if there's not CSS transform
+
+yepnope({
+	test : Modernizr.csstransforms,
+	yep:  ["{{ url_for('static', filename='lib/turn.js') }}"],
+	nope: ["{{ url_for('static', filename='lib/turn.html4.min.js') }}"],
+	both: ["{{ url_for('static', filename='css/basic.css') }}"],
+	complete: loadApp
+});
+</script>
+
+</body>
+</html>

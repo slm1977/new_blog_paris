@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<style>
+	@import url(https://fonts.googleapis.com/css?family=Indie+Flower);
+body {
+  margin: 0;
+  padding: 0;
+  background: lightgoldenrodyellow;
+}
+.paper {
+  position: absolute;
+  height: 550px;
+  width: 450px;
+  background: rgba(255,255,255,0.9);
+  margin: -275px -225px;
+  left: 50%;
+  top: 50%;
+  box-shadow: 0px 0px 5px 0px #888;
+}
+.paper::before {
+  content: '';
+  position: absolute;
+  left: 45px;
+  height: 100%;
+  width: 2px;
+  background: rgba(255,0,0,0.4);
+}
+.lines {
+  margin-top: 40px;
+  height: calc(100% - 40px);
+  width: 100%;
+  background-image: repeating-linear-gradient(white 0px, white 24px, steelblue 25px);
+}
+.text {
+  position: absolute;
+  top: 65px;
+  left: 55px;
+  bottom: 10px;
+  right: 10px;
+  line-height: 25px;
+  font-family: 'Indie Flower';
+  overflow: hidden;
+  outline: none;
+}
+
+
+
+.titolo {
+ text-align: right;
+ margin-right: 10px;
+ font-weight: bold;
+}
+
+.indirizzo {
+ position: relative;
+ margin-top:18px;
+ text-align: right;
+ font-weight: normal;
+ font-size: 80%;
+}
+
+.orari {
+  position: relative;
+  margin-top:10px
+ text-align: right;
+ font-weight: normal;
+ font-size: 80%;
+}
+
+
+.caratteristiche_title {
+  position: absolute;
+  top: 148px;
+  left: 55px;
+  bottom: 10px;
+  right: 10px;
+  line-height: 25px;
+  font-weight: bold;
+  font-family: 'Indie Flower';
+  overflow: hidden;
+  outline: none;
+}
+
+.text_caratteristiche {
+  position: absolute;
+  top: 173px;
+  bottom: 10px;
+  left: 55px;
+  right: 10px;
+  line-height: 25px;
+  font-family: 'Indie Flower';
+  overflow: hidden;
+  outline: none;
+}
+
+.recensioni_title {
+  position: absolute;
+  top: 223px;
+  left: 55px;
+  bottom: 10px;
+  right: 10px;
+  line-height: 25px;
+  font-weight: bold;
+  font-family: 'Indie Flower';
+  overflow: hidden;
+  outline: none;
+}
+
+.text_recensioni {
+  position: absolute;
+  top: 273px;
+  bottom: 10px;
+  left: 55px;
+  right: 10px;
+  line-height: 25px;
+  font-family: 'Indie Flower';
+  overflow: hidden;
+  outline: none;
+}
+
+.text_content {
+  position: absolute;
+  top: 248px;
+  bottom: 10px;
+  left: 55px;
+  right: 10px;
+  line-height: 25px;
+  font-family: 'Indie Flower';
+  overflow: hidden;
+  outline: none;
+}
+
+.holes {
+  position: absolute;
+  left: 10px;
+  height: 25px;
+  width: 25px;
+  background: lightgoldenrodyellow;
+  border-radius: 50%;
+  box-shadow: inset 0px 0px 2px 0px #888;
+}
+.hole-top {
+  top: 10%;
+}
+
+.rings-top {
+  top: 10%;
+}
+
+.rings2-top {
+  top: 11%;
+}
+
+.rings-middle {
+  top: 50%;
+}
+
+.rings2-middle {
+  top: 51%;
+}
+
+.rings-bottom {
+  bottom: 9%;
+}
+
+.rings2-bottom {
+  bottom: 10%;
+}
+
+
+
+
+.hole-middle {
+  top: 50%;
+}
+.hole-bottom {
+  bottom: 10%;
+}
+
+
+ .rings {
+  position: absolute;
+  left: -30px;
+  height: 50px;
+  width: 50px;
+  height: 25px;
+  border: 2px solid #000000;
+  border-radius: 100% 100% 100% 100%;
+  clip-path: polygon(0% 50%, 100% 50%, 100% 100%, 0% 100%);
+  transform: rotate(180deg);
+
+}
+
+
+</style>
+<div class="paper">
+
+
+  <div class="lines">
+
+     <div class="titolo" spellcheck="false" >
+      {% block intestazione %}
+       Intestazione di prova
+        {% endblock %}
+
+       <div class="indirizzo" spellcheck="false" >
+          {% block indirizzo %}
+            Indirizzo di prova
+        {% endblock %}
+    </div>
+
+    <div class="orari" contenteditable spellcheck="false">
+      {% block orari %}
+      {% endblock %}
+    </div>
+
+
+    </div>
+
+
+    <div class="caratteristiche_title" contenteditable spellcheck="false">
+      Di che si tratta?
+    </div>
+
+     <div class="text_caratteristiche" contenteditable spellcheck="false">
+      {% block caratteristiche %}
+      {% endblock %}
+    </div>
+
+     <div class="recensioni_title" contenteditable spellcheck="false">
+      Recensioni e suggerimenti
+    </div>
+
+
+
+    <div class="text_content" contenteditable spellcheck="false">
+      {% block content %}
+      {% endblock %}
+    </div>
+
+
+  </div>
+  <div class="holes hole-top"></div>
+  <div class="holes hole-middle"></div>
+  <div class="holes hole-bottom"></div>
+
+  <div class="rings rings-top"></div>
+  <div class="rings rings2-top"></div>
+
+  <div class="rings rings-middle"></div>
+  <div class="rings rings2-middle"></div>
+
+  <div class="rings rings-bottom"></div>
+  <div class="rings rings2-bottom"></div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,191 @@
+{% extends "bootstrap/base.html" %}
+
+{% block title %}
+<h1> Amici di Micky... a Parigi!!</h1>
+{% endblock %}
+
+{% block scripts %}
+<!--<script src="{{url_for('.static', filename='myscripts.js')}}"></script> -->
+{{super()}}
+
+ <!-- Font Awesome JS
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
+ -->
+<script>
+    $(document).ready(function(){
+        //alert("page_id:" + {{page_id}});
+
+    $(".blog_menu").css({
+        "color":"#f6b26b",
+    });
+
+      $(".titolo").css({
+        "color": "#f6b26b",
+        "font-family": 'Dancing Script OT',
+        "font-size" : '70px',
+        "text-align" : "center",
+        "margin" : "40px",
+       });
+
+       $(".book_content").css({
+        "background-color": "transparent"
+        });
+
+       $(".blog_content").css({
+        "background-color": "white",
+         "color": "black",
+        "font-family": 'Dancing Script OT',
+        "font-size" : "22px",
+        "text-align" : "left",
+        "padding" :"15px",
+        "height" : "450px",
+        "border": "10px solid #f6b26b",
+        "border-radius": "20px",
+
+       });
+  });
+
+</script>
+
+{% endblock %}
+
+
+
+{% block content %}
+
+
+{% if current_user.is_authenticated %}
+<div class="container" style="background-image: url({{url_for('static', filename='sfondi/parigiRatatouille_1200.gif')}});">
+{% else %}
+    <div class="container navbar navbar-inverse">
+{% endif %}
+
+<nav class="navbar navbar-inverse">
+<div id="navbarMenuHeroA" class="navbar-menu">
+         {% if current_user.is_authenticated %}
+                  <a class="navbar-brand" href="#">Ciao, {{ current_user.name }}</a>
+            {% endif %}
+            <div class="collapse navbar-collapse" id="navbarNav">
+
+                <ul class="nav navbar-nav">
+                      {% if not current_user.is_authenticated %}
+                            <li><a class="nav-item nav-link" href="{{url_for('auth.login')}}">Area riservata</a></li>
+                    {% else %}
+                    <li><a href="{{url_for('pages.create_new_page')}}">Nuova pagina</a></li>
+                    <li><a href="{{url_for('pages.page_edit',page_id=page_id)}}">Modifica pagina</a></li>
+                    <li><a href="{{url_for('pages.sort_pages')}}">Ordina pagine</a></li>
+                    <li><a href="{{url_for('auth.logout')}}">Esci dall'area riservata</a></li>
+                    {% endif %}
+
+                </ul>
+            </div>
+</div>
+</nav>
+
+    <h1 class="titolo">Amici di Micky... a Parigi!!</h1>
+
+<div class="row">
+ <!--<div class="col-md-2"></div>-->
+    <div class="col-md-7">
+           {% block blog_content %}
+           {% endblock %}
+    </div>
+    <div class="col-md-2"></div>
+    <div class="col-md-3 scrollablePost">
+    <!-- Sidebar -->
+
+    <p></p>
+    {% for p in menu %}
+
+        {% if current_user.is_authenticated %}
+                <h2>
+                    {% if not p.visible %}
+                         <span style="color: #fff;" class="glyphicon glyphicon-star" aria-hidden="true"></span>
+                    {% endif %}
+                    {% if p.id|int == page_id|int %}
+                    <u>
+                        <a href="{{url_for('pages.load_page', page_id=p.id)}}"  class="blog_menu dancing">{{p.menu_title}}</a>
+                    </u>
+                    {% else %}
+                     <a href="{{url_for('pages.load_page', page_id=p.id)}}"  class="blog_menu dancing">{{p.menu_title}}</a>
+                    {% endif %}
+
+                </h2>
+
+        {% else %}
+           {% if p.visible %}
+                <h2>
+                    <a href="{{url_for('pages.load_page', page_id=p.id)}}"  class="blog_menu dancing">{{p.menu_title}}</a>
+                </h2>
+            {% endif %}
+        {% endif %}
+   {% endfor %}
+
+
+        {% if current_user.is_authenticated %}
+            <h2>
+                <span style="color: #fff;" class="glyphicon glyphicon-star" aria-hidden="true"></span>
+                <a href="{{url_for('main.mostra_ristoranti')}}"  class="blog_menu dancing">Dove mangiare</a>
+            </h2>
+        {% endif %}
+
+
+            <h3 class="blog_menu dancing">
+                ... e se ti sono stata un pochino utile, puoi offrirmi un caffè ;-)
+            </h3>
+        <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+                <input type="hidden" name="cmd" value="_s-xclick" />
+                <input type="hidden" name="hosted_button_id" value="PND6DJDEYC3VQ" />
+                <input type="image"
+                       style="display: block;margin-left: auto;margin-right: auto;width:"
+                       width="35%" onmouseover="this.src='{{url_for('.static', filename='fotoblog/caffemickyFucsiaCircleTrBorder3hover.png')}}'"
+                       onmouseout="this.src='{{url_for('.static', filename='fotoblog/caffemickyFucsiaCircleTrBorder3.png')}}'"
+                       src="{{url_for('.static', filename='fotoblog/caffemickyFucsiaCircleTrBorder3.png')}}" border="0"
+                       name="submit" alt="PayPal è il metodo rapido e sicuro per pagare e farsi pagare online." />
+
+            <img alt="" border="0" src="https://www.paypalobjects.com/it_IT/i/scr/pixel.gif" width="1" height="1" />
+        </form>
+
+
+        <!-- Load Facebook SDK for JavaScript -->
+              <div id="fb-root" style="background-color:red;"></div>
+              <script>
+                window.fbAsyncInit = function() {
+                  FB.init({
+                    xfbml            : true,
+                    version          : 'v5.0'
+                  });
+                };
+
+                (function(d, s, id) {
+                var js, fjs = d.getElementsByTagName(s)[0];
+                if (d.getElementById(id)) return;
+                js = d.createElement(s); js.id = id;
+                js.src = 'https://connect.facebook.net/it_IT/sdk/xfbml.customerchat.js';
+                fjs.parentNode.insertBefore(js, fjs);
+              }(document, 'script', 'facebook-jssdk'));
+              </script>
+         <!-- End of Load Facebook SDK for JavaScript -->
+
+        <!-- Your customer chat code -->
+      <div class="fb-customerchat"
+       greeting_dialog_display="hide"
+        attribution=setup_tool
+        page_id="109431900518715"
+        theme_color="#f6b26b"
+        logged_in_greeting="Ciao! Come ti posso essere utile?"
+        logged_out_greeting="Grazie per la chiaccherata e a presto!">
+      </div>
+
+    </div>
+</div>
+
+</div>
+{% endblock %}
+
+{% block styles %}
+{{super()}}
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" crossorigin="anonymous">
+<link rel="stylesheet" href="{{url_for('.static', filename='css/home.css')}}">
+{% endblock %}

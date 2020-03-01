@@ -1,0 +1,222 @@
+{% extends "bootstrap/base.html" %}
+
+{% block content %}
+
+<style>
+  body {margin-left:20px;}
+  body.dragging, body.dragging * {
+  cursor: move !important;
+}
+
+.dragged {
+  position: absolute;
+  opacity: 0.5;
+  z-index: 2000;
+}
+
+ol.serialization li.placeholder {
+  position: relative;
+  /** More li styles **/
+}
+ol.serialization li.placeholder:before {
+  position: absolute;
+  /** Define arrowhead **/
+}
+</style>
+
+<h1>Ordine delle pagine nel menu</h1>
+
+<form style="margin-left:10px;" id="sorting_form" method="POST", action="{{url_for("pages.sort_pages")}}">
+<p>
+
+
+<!-- Button trigger modal -->
+    <button type="button" id="exitButton" class="btn btn-primary">
+      Esci
+    </button>
+
+    <input type="submit" id="saveButton" class="btn btn-primary" value="Salva"/>
+
+<div style="margin-top:10px;" class="alert" role="alert" id="formResponse">
+</div>
+</p>
+
+
+
+    <div id="editor" name="editor_div">
+        <p id="page_content">{{content|safe}}</p>
+    </div>
+
+</form>
+<ol class='serialization'>
+  {% for p in pages %}
+  <li id="{{p.id}}" class="serialize alert alert-success">{{p.menu_title}}</li>
+   {% endfor %}
+
+
+
+    <!-- Modal -->
+<div class="modal fade" id="confirmExitModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Modifiche non ancora salvate</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Salvare le modifiche prima di uscire?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="exitFromEditing(true)" data-dismiss="modal">Si</button>
+        <button type="button" class="btn btn-secondary" onclick="exitFromEditing(false)" data-dismiss="modal">No</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Annulla</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- End of Modal -->
+
+{% endblock %}
+
+
+{% block scripts %}
+<!--<script src="{{url_for('.static', filename='myscripts.js')}}"></script> -->
+{{super()}}
+
+<script src="{{url_for('.static', filename='js/jquery_sortable.js')}}"></script>
+
+    <script type="text/javascript">
+
+        var modified = false;
+        var exitRequest = false;
+
+
+        function exitOrSave()
+            {
+            console.log("SAVE OR EXIT");
+             if (!modified)
+             window.location.href="{{url_for('main.home')}}";
+             else
+             {
+                $('#confirmExitModal').modal('show');
+              }
+            }
+
+    function exitFromEditing(saveOnExit)
+        {
+        exitRequest = true;
+        if (saveOnExit && modified==true)
+        {
+        $('#saveButton').submit();
+        }
+        else
+        {
+          window.location.href="{{url_for('main.home')}}";
+        }
+
+          //<a style={'margin:20px;'} href="{{url_for('main.home')}}">Annulla</a>
+          //<button onclick="exitFromEditing()">Esci</button>
+        }
+
+
+
+        // Shorthand for $( document ).ready()
+        $(function() {
+
+        modified = false;
+
+        var pages_id = {{pages_id|tojson}};
+        console.log("Ordine iniziale pagine:");
+        console.log(pages_id);
+
+         $("#exitButton").click(function(){
+                    exitOrSave();
+                  });
+
+        var group = $("ol.serialization").sortable({
+                group: 'limited_drop_targets',
+                isValidTarget: function  ($item, container) {
+                  if($item.is(".highlight"))
+                    return true;
+                  else
+                    return $item.parent("ol")[0] == container.el[0];
+                },
+                onDrop: function ($item, container, _super) {
+
+                   // aggiorno il valore degli id delle pagine
+                   pages_id =  group.sortable("serialize").get().join("\n");
+                   console.log(pages_id);
+
+                  _super($item, container);
+
+                  modified = true;
+                  $('#formResponse').removeClass("alert-success");
+                  $('#formResponse').addClass("alert-danger");
+                  $('#formResponse').html('Da salvare');
+                },
+                serialize: function (parent, children, isContainer) {
+                  return isContainer ? children.join() : parent.attr("id");
+                },
+                tolerance: 6,
+                distance: 10
+              });
+
+             var frm = $('#sorting_form');
+
+
+            frm.submit(function (e) {
+
+                e.preventDefault();
+
+                $.ajax({
+                    type: frm.attr('method'),
+                    url: frm.attr('action'),
+                    data: { 'pages_id':pages_id,
+
+                    },
+                    success: function (data) {
+                        console.log('Submission was successful.');
+                        console.log(data);
+                        if (data["success"]  == true)
+                            {
+                                modified = false;
+                                $('#formResponse').removeClass("alert-danger");
+                                $('#formResponse').addClass("alert-success");
+                                $('#formResponse').html(data["message"]);
+
+                                if (exitRequest==true)
+                                window.location.href="{{url_for('main.home')}}";
+                            }
+                           else
+
+                                 {
+                                 // in caso di problemi annullo la richiesta di uscita
+                                 exitRequest = false;
+                                $('#formResponse').removeClass("alert-success");
+                                $('#formResponse').addClass("alert-danger");
+                                $('#formResponse').html(data["message"]);
+                                }
+
+                    },
+                    error: function (data) {
+                        console.log('An error occurred.');
+                        console.log(data);
+                        // in caso di problemi annullo la richiesta di uscita
+                        exitRequest==false;
+                        $('#formResponse').removeClass("alert-success");
+                        $('#formResponse').addClass("alert-danger");
+                        $('#formResponse').html("Si sono verificati problemi nel salvataggio: %s" % data);
+                    },
+                });// AJAX end
+
+
+            });  // frm submit end
+
+          }); // function END
+
+</script>
+
+
+{% endblock %}

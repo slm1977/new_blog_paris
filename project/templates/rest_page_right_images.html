@@ -1,0 +1,86 @@
+{% extends "base_restaurants_right_images.html" %}
+
+{% block intestazione %}
+   {{ rist["titolo"] }}
+{% endblock %}
+
+{% block indirizzo %}
+   {{ rist["indirizzo"] }}
+{% endblock %}
+
+{% block orari %}
+ {{ rist["orari"] }}
+{% endblock %}
+
+ {% block images %}
+ <div class="images">
+
+     <table>
+         <tr>
+             <th>
+                 {% if rist["immagini"][0] is defined %}
+                     {% if rist["immagini"][0][1][0] %}
+                         <th><img class="images_border" width="200" src='{{url_for("static", filename=rist["immagini"][0][0])}}'/></th>
+                            {% else %}
+                         <th><img class="images_border" height="200" src='{{url_for("static", filename=rist["immagini"][0][0])}}'/></th>
+
+                  {% endif %}
+              {% endif %}
+
+             </th>
+             <th>
+                 {% if rist["immagini"][1] is defined %}
+                     {% if rist["immagini"][1][1][0] %}
+                         <th><img class="images_border" width="200" src='{{url_for("static", filename=rist["immagini"][1][0])}}'/></th>
+                            {% else %}
+                         <th><img class="images_border" height="200" src='{{url_for("static", filename=rist["immagini"][1][0])}}'/></th>
+
+                  {% endif %}
+              {% endif %}
+
+             </th>
+         </tr>
+
+         <tr>
+             <th>
+                 {% if rist["immagini"][2] is defined %}
+                     {% if rist["immagini"][2][1][0] %}
+                         <th><img class="images_border" width="200" src='{{url_for("static", filename=rist["immagini"][2][0])}}'/></th>
+                            {% else %}
+                         <th><img class="images_border" height="200" src='{{url_for("static", filename=rist["immagini"][2][0])}}'/></th>
+
+                  {% endif %}
+              {% endif %}
+
+             </th>
+             <th>
+                 {% if rist["immagini"][3] is defined %}
+                     {% if rist["immagini"][3][1][0] %}
+                         <th><img class="images_border" width="200" src='{{url_for("static", filename=rist["immagini"][3][0])}}'/></th>
+                            {% else %}
+                         <th><img class="images_border" height="200" src='{{url_for("static", filename=rist["immagini"][3][0])}}'/></th>
+
+                  {% endif %}
+              {% endif %}
+
+             </th>
+         </tr>
+     </table>
+      <!--
+        <table>
+              <tr>
+              {% for im in rist["immagini"] %}
+
+                  {% if im[1][0] %}
+                     <th><img class="images_border" width="200" src='{{url_for("static", filename=im[0])}}'/></th>
+                        {% else %}
+                     <th><img class="images_border" height="200" src='{{url_for("static", filename=im[0])}}'/></th>
+
+              {% endif %}
+
+              {% endfor %}
+              </tr>
+          </table>
+     -->
+      </div>
+{% endblock %}

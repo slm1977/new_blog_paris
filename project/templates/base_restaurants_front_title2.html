@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {
+        console.log("DOC PRONTO...");
+
+        function getHeight(){
+
+            $("#dummy").val( $("#textarea").val() );
+            return $("#dummy").prop("scrollHeight");
+
+        }
+
+        $('#textarea').keydown(function(event){
+
+            while ( getHeight() > $(this).height()) {
+                $(this).css('font-size', '-=1');
+                $("#dummy").css('font-size', '-=1');
+            }
+            if (event.keyCode == 8 || event.keyCode == 46) {
+                while ( getHeight() <= $(this).height() && $(this).css('font-size') <= "25px") {
+                    $(this).css('font-size', '+=1');
+                    $("#dummy").css('font-size', '+=1');
+                }
+                    $(this).css('font-size', '-=1');
+                    $("#dummy").css('font-size', '-=1');
+            }
+
+        });
+
+        $('#textarea').html("{{rist['quartiere']}}");
+        var e = jQuery.Event("keydown");
+        e.which = 16; // # Some key code value
+        $("#textarea").trigger(e);
+
+});
+
+
+    </script>
+</head>
+<body>
+<style>
+	@import url(https://fonts.googleapis.com/css?family=Indie+Flower);
+
+
+#textarea, #dummy {
+
+width: 220px;
+font-size: 40px;
+}
+
+#textarea {
+    background-color: transparent;
+
+    color:red;
+    margin-top: 80px;
+    margin-left: 54px;
+    height: 60px;
+    text-align: center;
+    resize: none;
+    overflow: hidden;
+    border-style: none;
+    border-color: transparent;
+
+}
+
+#dummy {
+    visibility: hidden;
+    height: 0px;
+}
+
+html { overflow: hidden; }
+
+body {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+
+}
+.paper {
+  position: absolute;
+  height: 550px;
+  width: 450px;
+  background-image: url({{url_for('static', filename='sfondi/copertina_ristoranti3.png')}});
+   background-repeat: no-repeat;
+  background-size: 100% 100%;
+  margin: -275px -225px;
+  left: 50%;
+  top: 50%;
+
+}
+
+.title {
+ text-align: center;
+ font-family: 'Indie Flower';
+ font-weight: bold;
+ font-size: 50px;
+ color: red;
+}
+
+
+</style>
+<div class="paper">
+
+
+  <div>
+
+    <div class="title"  spellcheck="false">
+        <br><textarea id="textarea" class="title">
+        </textarea>
+        <textarea id="dummy"></textarea>
+
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,3 @@
+ckeditor
+turn4Js
+pip install flask flask-sqlalchemy flask-login

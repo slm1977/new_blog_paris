@@ -1,0 +1,17 @@
+{% extends "home.html" %}
+
+
+{% block blog_content %}
+<div class="blog_content scrollablePost">
+    <h2>{{pagina["titolo"]}}</h2>
+    <p>
+          {{pagina["contenuto"]|safe}}
+    </p>
+
+    {% if pagina["image"] is defined %}
+    <br><br>
+    <img style="display: block;margin-left: auto;margin-right: auto;width: 300px;" src="{{url_for('static', filename=pagina['image'])}}"/>
+    {% endif %}
+</div>
+<p></p>
+{% endblock %}

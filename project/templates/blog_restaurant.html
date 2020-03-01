@@ -1,0 +1,9 @@
+{% extends "home.html" %}
+
+{% block blog_content %}
+
+<div class="book_content" style="background-color:rgba(255, 0, 0, 0); width:150%; height:600px; margin-left:50px;">
+    <iframe src="{{url_for('main.book', quartiere='%s' % quartiere)}}" width="100%" height="100%" frameBorder="0"></iframe>
+</div>
+{% endblock %}
+
