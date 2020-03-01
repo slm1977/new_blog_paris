@@ -11,13 +11,19 @@
 
 CKEDITOR.editorConfig = function( config ) {
 	// Define changes to default configuration here. For example:
-	// config.language = 'fr';
+	config.language = 'fr';
 	// config.uiColor = '#AADC6E';
 	config.extraPlugins = ['simage', 'emoji'];
 	config.imageUploadURL = '/upload/';
 
+
 };
+
+`CKEDITOR.config.font_names =
+    'Arial/Arial, Helvetica, sans-serif;' +
+    'Times New Roman/Times New Roman, Times, serif;' +
+    'Verdana'; `
 
 `CKEDITOR.config.extraPlugins: 'simage'`;
 `CKEDITOR.config.imageUploadURL: '/upload/'`;
- `CKEDITOR.config.dataParser: func(data)`;
+`CKEDITOR.config.dataParser: func(data)`;
