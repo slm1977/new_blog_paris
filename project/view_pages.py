@@ -1,12 +1,15 @@
-from flask import Flask, current_app,  Blueprint, render_template, request, redirect, url_for, send_from_directory, jsonify
-from flask_login import login_required, current_user
+import logging
 import os
 import time
+
+from flask import Flask, current_app,  Blueprint, render_template, request, redirect, url_for, send_from_directory, jsonify
+from flask_login import login_required, current_user
+
 from .models import Page
 from . import db
 from .db_queries import get_pages, add_page_to_db, update_page, delete_page, update_pages_index, get_last_created_page
-import os
-import logging
+
+
 LOG = logging.getLogger(__name__)
 
 pages = Blueprint('pages', __name__,template_folder='templates',static_folder='static')

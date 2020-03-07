@@ -15,6 +15,7 @@ from project.models import User
 from project.auth import auth as auth_blueprint
 from project.main import main as main_blueprint
 from project.view_pages import pages as pages_blueprint
+from project.view_restaurants import restaurants as restaurants_blueprint
 
 from project.ristoranti import ristoranti as ristoranti
 from project import db_queries
@@ -55,17 +56,17 @@ def create_app():
         return User.query.get(int(user_id))
 
     # blueprint for auth routes in our app
-
     app.register_blueprint(auth_blueprint)
 
 
     # blueprint for non-auth parts of app
-
     app.register_blueprint(main_blueprint)
 
     # blueprint for editable pages
-
     app.register_blueprint(pages_blueprint)
+
+    # blueprint for editable restaurants
+    app.register_blueprint(restaurants_blueprint)
 
     return app
 

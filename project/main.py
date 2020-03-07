@@ -7,7 +7,8 @@ from  project.ristoranti import ristoranti
 #from .itinerari import itinerari
 #from .testi import pagine
 
-from .db_queries import get_pages
+from .db_queries import get_pages, add_zone_to_db, add_restaurant_to_db
+#from .models import Restaurant,Zone
 
 main = Blueprint('main', __name__,template_folder='templates',static_folder='static')
 
@@ -31,6 +32,29 @@ def caricaItinerario(indice):
 def mostraItinerari():
     return render_template("blog_itinerari.html", itinerari=itinerari)
 """
+
+@main.route("/insert_rest/")
+@login_required
+def insertRestaurants():
+    quartieri = ristoranti.keys()
+    q_id= 14 # id del quartiere latino
+    for q in quartieri:
+        for r in ristoranti[q]:
+            quartiere = r["quartiere"]
+            name = r["titolo"]
+            address = r["indirizzo"]
+            topic = r["caratteristiche"]
+            description = r["descrizione"]
+            zone_id = q_id
+            orari = r["orari"]
+            index = 1
+            print("%s: id:%s Rist:%s" % (quartiere, q_id, name))
+            add_restaurant_to_db(name=name, address=address, topic=topic,
+                                 description=description, zone_id=zone_id,
+                                 index=index, orari=orari)
+        q_id +=1
+
+    return "Ok"
 
 
 

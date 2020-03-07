@@ -1,9 +1,14 @@
 from project import db
-from models import Page
+from project.models import Page, Restaurant, Zone
 from flask import url_for
 
 import logging
 LOG = logging.getLogger(__name__)
+
+
+class MenuTypes:
+    PAGE = 0
+    RESTAURANT = 1
 
 def get_pages():
     pages = Page.query.order_by(Page.index).all()
@@ -11,6 +16,35 @@ def get_pages():
 
 def get_last_created_page():
     return Page.query.order_by(Page.id.desc()).first()
+
+def add_zone_to_db(zone_title, index=1):
+    try:
+        new_zone = Zone(name=zone_title, index=index)
+        db.session.add(new_zone)
+        db.session.commit()
+    except Exception as ex:
+        print("Eccezione nella scrittura del quartiere sul db:%s" % ex)
+        #raise ex
+        return None
+    return None
+
+
+def add_restaurant_to_db(name, address, topic, description, zone_id, orari, index=1):
+    try:
+        new_restaurant = Restaurant(name=name, address=address,
+                                   topic=topic, description=description,
+                                   zone_id=zone_id, orari=orari, index=index)
+
+        print("Aggiunta su db del ristorante %s" % name )
+        db.session.add(new_restaurant)
+        db.session.commit()
+    except Exception as ex:
+        print("Eccezione nella scrittura del ristorante sul db:%s" % ex)
+        #raise ex
+        return None
+    return None
+
+
 
 def add_page_to_db(menu_title, visible, index=None):
     try:
@@ -21,7 +55,7 @@ def add_page_to_db(menu_title, visible, index=None):
         filename= "page_%s.html" % (last_id+1)
         #path = "./project/static/menu_pages/%s" % filename
         path = ".%s" % url_for("static", filename="menu_pages/%s" % filename)
-        new_page = Page(menu_title=menu_title,path=path, index=int(index), visible=bool(visible))
+        new_page = Page(menu_title=menu_title,path=path, index=int(index), visible=bool(visible), type=MenuTypes.PAGE)
 
         # add the new page to the database
         db.session.add(new_page)
