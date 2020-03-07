@@ -14,6 +14,23 @@ def get_pages():
     pages = Page.query.order_by(Page.index).all()
     return pages
 
+def get_zones():
+    zones = Zone.query.order_by(Zone.index).all()
+    return zones
+
+def update_zones(zones, zones_id):
+    for zone_id in zones_id:
+        try:
+            new_zone_dict = zones[zone_id]
+            zone = Zone.query.filter_by(id=int(zone_id)).first()
+            zone.name = new_zone_dict[zone_id]["name"]
+            zone.visible = bool(new_zone_dict[zone_id]["visible"])
+            db.session.commit()
+        except Exception as ex:
+            print("Eccezione nell'aggiornamento del quartiere sul db:%s" % ex)
+            db.session.rollback()
+            return None
+
 def get_last_created_page():
     return Page.query.order_by(Page.id.desc()).first()
 

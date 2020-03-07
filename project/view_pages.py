@@ -7,7 +7,7 @@ from flask_login import login_required, current_user
 
 from .models import Page
 from . import db
-from .db_queries import get_pages, add_page_to_db, update_page, delete_page, update_pages_index, get_last_created_page
+from .db_queries import get_pages, add_page_to_db, update_page, delete_page, update_pages_index, get_last_created_page, MenuTypes
 
 
 LOG = logging.getLogger(__name__)
@@ -46,6 +46,9 @@ def load_page(page_id):
     if (not page.visible and not current_user.is_authenticated):
         return redirect("/login")
 
+    if (page.type == MenuTypes.RESTAURANT):
+        return redirect("/ristoranti")
+
     LOG.info('Carico la pagina dal percorso:%s', page.path)
     LOG.info('directory corrente:%s',os.getcwd())
     LOG.info('app_root_path:%s', current_app.root_path)
@@ -69,6 +72,7 @@ def sort_pages():
         return render_template("page_sorting.html", pages=pages, pages_id=pages_id)
     else:
         pages_id = request.form['pages_id']
+        print(request.form.to_dict().keys())
         print("ID PAGINE DA AGGIORNARE:")
         print(pages_id)
         result = update_pages_index(pages_id)

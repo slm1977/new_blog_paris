@@ -1,0 +1,311 @@
+{% extends "bootstrap/base.html" %}
+<link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+{% block content %}
+
+<form style="margin-left:10px;" id="editing_form" method="POST", action="{{url_for("pages.save_page")}}">
+<p>
+
+    <div class="field">
+        <div class="control">
+            <label for="menu_title">Voce sul menu della pagina: </label>
+            <input name="menu_title" id="menu_title"  onchange="notifyChanges()" type="text" value="{{page.menu_title if page != None }}" required/><br>
+
+        </div>
+    </div>
+
+
+<div class="field">
+    <div class="control">
+        <label for="visible_state">Rendi la pagina visibile agli utenti: </label>
+        <input class="custom-control-input" type="checkbox" onchange="notifyChanges()"  id="visible_state" {{'checked' if page != None and page.visible==True }}/><br>
+    </div>
+</div>
+
+<!-- Button trigger modal -->
+    <button type="button" id="exitButton" class="btn btn-primary">
+      Esci
+    </button>
+
+    <input type="submit" id="saveButton" class="btn btn-primary" value="Salva"/>
+
+    <button type="button" id="deleteButton" class="btn btn-danger">
+      Elimina
+    </button>
+
+<div style="margin-top:10px;" class="alert" role="alert" id="formResponse">
+</div>
+</p>
+
+
+
+    <div id="editor" name="editor_div">
+       {{content|safe}}
+    </div>
+
+</form>
+
+
+<!-- Modal Save Page -->
+<div class="modal fade" id="confirmExitModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Modifiche non ancora salvate</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Salvare le modifiche prima di uscire?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="exitFromEditing(true)" data-dismiss="modal">Si</button>
+        <button type="button" class="btn btn-secondary" onclick="exitFromEditing(false)" data-dismiss="modal">No</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Annulla</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- End of Modal Save Page -->
+
+
+<!-- Modal Delete Page -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteModalLongTitle" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="confirmDeleteModalLongTitle">Eliminazione Pagina</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Si è sicuri di voler eliminare la pagina corrente?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick='deletePage()' data-dismiss="modal">Si</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- End of Modal Save Page -->
+
+
+{% endblock %}
+
+
+{% block scripts %}
+<!--<script src="{{url_for('.static', filename='myscripts.js')}}"></script> -->
+{{super()}}
+
+    <script type="text/javascript">
+    var exitRequest = false;
+    var modified = false;
+    var page_id = {{page.id if page != None else -1 }}
+
+
+ function return_to_page()
+ {
+    // se la pagina è stata creata ricarico quella
+    if (page_id>0)
+            {
+             console.log("Ho a che fare con una pagina già esistente");
+             window.location.href=`/load_page/${page_id}/`;
+            }
+        else
+            {
+              window.location.href="/";
+            }
+ }
+
+
+ function exitOrSave()
+    {
+     if (!modified)
+     {
+        return_to_page();
+     }
+     else
+     {
+        $('#confirmExitModal').modal('show');
+      }
+    }
+
+
+function confirmDeletePage()
+    {
+    $('#confirmDeleteModal').modal('show');
+    }
+
+function deletePage()
+{
+   var page_id = {{page.id if page != None else -1 }}
+   if (page_id<0)
+   window.location.href= "/"
+   else
+   window.location.href= "/delete/" + page_id;
+}
+
+
+function notifyChanges()
+{
+    modified = true;
+     $('#formResponse').removeClass("alert-success");
+     $('#formResponse').addClass("alert-danger");
+     $('#formResponse').html('Da salvare');
+}
+
+
+function exitFromEditing(saveOnExit)
+        {
+        exitRequest = true;
+
+        if (saveOnExit && modified==true)
+        {
+        $('#saveButton').submit();
+        }
+        else
+        {
+          return_to_page();
+        }
+
+
+        }
+
+
+
+
+        // Shorthand for $( document ).ready()
+        $(function() {
+            console.log( "ready!" );
+            exitRequest = false;
+            modified = false;
+
+            $("#exitButton").click(function(){
+                    exitOrSave();
+                  });
+
+             $("#deleteButton").click(function(){
+                    confirmDeletePage();
+                  });
+
+
+
+            var frm = $('#editing_form');
+            //var ser = frm.serialize();
+            //console.log("Form serializzato");
+            console.log($('#editing_form').html());
+
+
+            frm.submit(function (e) {
+
+                e.preventDefault();
+
+                $.ajax({
+                    type: frm.attr('method'),
+                    url: frm.attr('action'),
+                    data: { 'content': CKEDITOR.instances.editor.getData(),
+                             'menu_title' : $('#menu_title').val(),
+                             'visible' : $('#visible_state').is(":checked"),
+                             'id' : page_id
+                        },
+                    success: function (data) {
+                        console.log('Submission was successful.');
+                        console.log(data);
+                        if (data["success"]  == true)
+                            {
+                                modified = false;
+                                // aggiorno il page_id della pagina!
+                                page_id = parseInt(data["page_id"]);
+
+                                $('#formResponse').removeClass("alert-danger");
+                                $('#formResponse').addClass("alert-success");
+                                $('#formResponse').html(data["message"]);
+
+                                if (exitRequest==true)
+                                return_to_page();
+                            }
+                           else
+
+                                 {
+                                 // in caso di problemi annullo la richiesta di uscita
+                                 exitRequest = false;
+                                $('#formResponse').removeClass("alert-success");
+                                $('#formResponse').addClass("alert-danger");
+                                $('#formResponse').html(data["message"]);
+                                }
+
+                    },
+                    error: function (data) {
+                        console.log('An error occurred.');
+                        console.log(data);
+                        // in caso di problemi annullo la richiesta di uscita
+                        exitRequest==false;
+                        $('#formResponse').removeClass("alert-success");
+                        $('#formResponse').addClass("alert-danger");
+                        $('#formResponse').html("Si sono verificati problemi nel salvataggio: %s" % data);
+                    },
+                });// AJAX end
+
+
+            });  // frm submit end
+
+        }); // function END
+
+
+</script>
+
+
+
+<script src="{{url_for('static', filename='ckeditor/ckeditor.js')}}"></script>
+<script>
+
+
+
+ document.getElementById("editor").value = "<p>Some other editor data.</p>";
+    //CKFinder.setupCKEditor();
+    var ed = CKEDITOR.replace( 'editor' ,{
+                                            toolbar: 'Basic',
+                                            language: 'it',
+                                            uiColor: '#F400A1',
+                                            contentsCss : '{{url_for('.static', filename='css/home.css')}}',
+                                            font_names :
+                                                        'Arial/Arial, Helvetica, sans-serif;' +
+                                                        'Times New Roman/Times New Roman, Times, serif;' +
+                                                        'Verdana;' +
+                                                        'Dancing Script OT;'
+                                            }
+                                       );
+
+
+    // The "change" event is fired whenever a change is made in the editor.
+    CKEDITOR.instances.editor.on( 'change', function( evt ) {
+        // getData() returns CKEditor's HTML content.
+     //console.log( 'Total bytes: ' + evt.editor.getData().length );
+     notifyChanges();
+    });
+
+    CKEDITOR.instances.editor.on( 'uploadingImage', function( evt ) {
+        // getData() returns CKEditor's HTML content.
+     console.log( 'Upload della immagine!');
+        });
+
+        ed.on( 'imageUploaded', function( evt ) {
+        // getData() returns CKEditor's HTML content.
+        console.log( 'Immagine uploadata!');
+        });
+
+     CKEDITOR.instances.editor.on( 'save', function( evt ) {
+     console.log("Saving...");
+     });
+
+
+</script>
+{% endblock %}
+
+{% block styles %}
+{{super()}}
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" crossorigin="anonymous">
+<link rel="stylesheet" href="{{url_for('.static', filename='css/home.css')}}">
+{% endblock %}
