@@ -24,7 +24,7 @@ ol.serialization li.placeholder:before {
 }
 </style>
 
-<h1>Ordine delle zone del Libro dei Ristoranti</h1>
+<h1>Modifica delle zone del Libro dei Ristoranti</h1>
 
 <form style="margin-left:10px;" id="sorting_form" method="POST", action="{{url_for("restaurants.edit_zones")}}">
 <p>
@@ -53,12 +53,14 @@ ol.serialization li.placeholder:before {
   {% for z in zones %}
   <li id="{{z.id}}" class="serialize alert alert-success">
       <div>
-          <input id="txt_{{z.id}}" type="text" value="{{z.name}}"/>
-          <input id="check_{{z.id}}" type="checkbox" checked="checked">
+          <input id="txt_{{z.id}}" type="text" value="{{z.name}}" onchange="notifyChanges()"/>
 
-        <label for="checkboxVisible">Visibile</label>
-          <button style="float:right" type="button" id="butZoneDelete" class="btn btn-danger ">Elimina</button>
-
+          <input id="check_{{z.id}}" type="checkbox" onchange="notifyChanges()" {{'checked' if z != None and z.visible==True }}>
+          <label for="check_{{z.id}}">Visibile</label>
+         <div style="float:right">
+          <input id="check_delete{{z.id}}" type="checkbox" zoneId={{z.id}} onchange="notifyCheckDeleteChanges(event)">
+          <label  for="check_delete{{z.id}}">Da eliminare</label>
+          </div>
       </div>
 
 
@@ -105,7 +107,34 @@ ol.serialization li.placeholder:before {
         var exitRequest = false;
 
 
+        function notifyCheckDeleteChanges(event)
+        {
+         notifyChanges();
+         console.log("notifyCheckDeleteChanges");
+         console.log(`Evento Target:${event.target}`);
+         let el = $(event.target);
+         console.log("Jquery ZoneId Attr")
+         console.log(el.attr("zoneId"));
+           if ($("#check_delete" +  el.attr('zoneId')).is(":checked"))
+           {
+             $("#" + el.attr('zoneId')).removeClass("alert-success");
+             $("#" + el.attr('zoneId')).addClass("alert-danger");
+           }
+           else
+           {
+             $("#" + el.attr('zoneId')).removeClass("alert-danger");
+             $("#" + el.attr('zoneId')).addClass("alert-success");
+           }
 
+        }
+
+        function notifyChanges()
+        {
+            modified = true;
+             $('#formResponse').removeClass("alert-success");
+             $('#formResponse').addClass("alert-danger");
+             $('#formResponse').html('Da salvare');
+        }
 
 
         function exitOrSave()
@@ -167,10 +196,8 @@ ol.serialization li.placeholder:before {
 
                   _super($item, container);
 
-                  modified = true;
-                  $('#formResponse').removeClass("alert-success");
-                  $('#formResponse').addClass("alert-danger");
-                  $('#formResponse').html('Da salvare');
+                  notifyChanges();
+
                 },
                 serialize: function (parent, children, isContainer) {
                   return isContainer ? children.join() : parent.attr("id");
@@ -197,10 +224,12 @@ ol.serialization li.placeholder:before {
                   {
                    let txt_id ="#txt_" + zones_arr[i];
                    let check_id = "#check_" + zones_arr[i];
+                   let checkdelete_id = "#check_delete" + zones_arr[i];
                    let zone_name = $(txt_id).val();
                    let zone_visible =  $(check_id).is(":checked");
+                   let zone_deleted =  $(checkdelete_id).is(":checked");
                    console.log(`Zona ${zones_arr[i]} Visible: ${zone_visible} Nome: ${zone_name}`);
-                   zones[zones_arr[i]] = { "name" : zone_name, "visible" : zone_visible}
+                   zones[zones_arr[i]] = { "name" : zone_name, "visible" : zone_visible, "deleted": zone_deleted}
                   }
                   console.log(zones);
                   return zones;
@@ -216,12 +245,14 @@ ol.serialization li.placeholder:before {
                 console.log("Modifiche da inviare");
                 let my_zones=getZones();
                 console.log(my_zones);
+                console.log("Zones_id")
+                console.log(zones_id)
 
                 $.ajax({
                     type: frm.attr('method'),
                     url: frm.attr('action'),
                     data: {
-                            'new_zones_id': zones_id,
+                            'new_zones_id':  zones_id.toString(),
                            'new_zones' : JSON.stringify(my_zones)
                             },
                     success: function (data) {

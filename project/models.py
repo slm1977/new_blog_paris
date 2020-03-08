@@ -1,14 +1,9 @@
 from flask_login import UserMixin
 from sqlalchemy.sql import expression
-
-
 from project import db
 
-
-
-
 class User(UserMixin, db.Model):
-    __table_name = "User"
+    __table_name__ = "User"
     __table_args__ = {'extend_existing': True}
     id = db.Column(db.Integer, primary_key=True) # primary keys are required by SQLAlchemy
     email = db.Column(db.String(100), unique=True)
@@ -17,7 +12,7 @@ class User(UserMixin, db.Model):
 
 
 class Page(UserMixin, db.Model):
-    __table_name = "Page"
+    __table_name__ = "Page"
     __table_args__ = {'extend_existing': True}
     id = db.Column(db.Integer, primary_key=True) # primary keys are required by SQLAlchemy
     menu_title = db.Column(db.String(1000), unique=True)
@@ -37,22 +32,22 @@ class Zone(UserMixin, db.Model):
     name = db.Column(db.String(200), unique=True)
     index = db.Column(db.Integer)
     restaurants = db.relationship('Restaurant', backref='zone', lazy=True)
+    visible = db.Column(db.Boolean, server_default=expression.false(), nullable=False)
+    deleted = db.Column(db.Boolean, server_default=expression.false(), nullable=False)
 
 
 class Restaurant(UserMixin, db.Model):
     __table_name__ = "Restaurant"
     __table_args__ = {'extend_existing': True}
-
     id = db.Column(db.Integer, primary_key=True)  # primary keys are required by SQLAlchemy
     name = db.Column(db.String(100), unique=True)
     address = db.Column(db.String(100))
     topic = db.Column(db.String(100))
     description = db.Column(db.String(1500))
-
     zone_id = db.Column(db.Integer, db.ForeignKey('zone.id'))
-
     index = db.Column(db.Integer)
     orari = db.Column(db.String(100))
+    deleted = db.Column(db.Boolean, server_default=expression.false(), nullable=False)
 
 #https://stackoverflow.com/questions/46055661/flask-many-to-many-relation-leads-to-multiple-classes-found-for-path
 #https://flask-sqlalchemy.palletsprojects.com/en/2.x/models/

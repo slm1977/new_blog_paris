@@ -6,7 +6,7 @@ import json
 
 from project.models import Restaurant,Zone, Page
 from . import db
-from .db_queries import get_zones
+from .db_queries import get_zones, update_zones
 
 import logging
 LOG = logging.getLogger(__name__)
@@ -26,12 +26,14 @@ def edit_zones():
     else:
         print("CHIAVI RESTITUITE")
         print(request.form.to_dict().keys())
+
         zones_id = request.form['new_zones_id'].split(",")
+        LOG.debug("zones_id:%s" % zones_id)
+
         zones =  json.loads(request.form['new_zones'])
         print("ID zone da DA AGGIORNARE:")
         print(zones_id)
         print("Dizionario delle zone")
         print(zones)
         result = update_zones(zones, zones_id)
-        return "ok"
-        #return jsonify(result)
+        return jsonify(result)

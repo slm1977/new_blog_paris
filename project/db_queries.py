@@ -15,21 +15,32 @@ def get_pages():
     return pages
 
 def get_zones():
-    zones = Zone.query.order_by(Zone.index).all()
+    zones = Zone.query.filter_by(deleted=False).order_by(Zone.index).all()
     return zones
 
 def update_zones(zones, zones_id):
+    LOG.info("ZONE DA AGGIORNARE:%s" % zones_id)
+    index = 1
     for zone_id in zones_id:
         try:
             new_zone_dict = zones[zone_id]
+            LOG.info("AGGIORNO ZONA")
+            LOG.info(new_zone_dict)
             zone = Zone.query.filter_by(id=int(zone_id)).first()
-            zone.name = new_zone_dict[zone_id]["name"]
-            zone.visible = bool(new_zone_dict[zone_id]["visible"])
+            zone.name = new_zone_dict["name"]
+            zone.visible = bool(new_zone_dict["visible"])
+            zone.deleted = bool(new_zone_dict["deleted"])
+            zone.index = index
             db.session.commit()
+            index +=1
         except Exception as ex:
-            print("Eccezione nell'aggiornamento del quartiere sul db:%s" % ex)
+            LOG.error("Eccezione nell'aggiornamento del quartiere sul db:%s" % ex)
             db.session.rollback()
-            return None
+            result = {"success": False, "message": "Eccezione nell'aggiornamento delle zone sul db:%s" % ex}
+            return result
+
+    result = {"success": True, "message": "Zone aggiornate con successo!!"}
+    return result
 
 def get_last_created_page():
     return Page.query.order_by(Page.id.desc()).first()
@@ -40,7 +51,7 @@ def add_zone_to_db(zone_title, index=1):
         db.session.add(new_zone)
         db.session.commit()
     except Exception as ex:
-        print("Eccezione nella scrittura del quartiere sul db:%s" % ex)
+        LOG.error("Eccezione nella scrittura del quartiere sul db:%s" % ex)
         #raise ex
         return None
     return None
@@ -52,7 +63,7 @@ def add_restaurant_to_db(name, address, topic, description, zone_id, orari, inde
                                    topic=topic, description=description,
                                    zone_id=zone_id, orari=orari, index=index)
 
-        print("Aggiunta su db del ristorante %s" % name )
+        LOG.info("Aggiunta su db del ristorante %s" % name )
         db.session.add(new_restaurant)
         db.session.commit()
     except Exception as ex:
@@ -80,7 +91,7 @@ def add_page_to_db(menu_title, visible, index=None):
         return Page.query.order_by(Page.id.desc()).first()
 
     except Exception as ex:
-        print("Eccezione nella scrittura della pagina sul db:%s" % ex)
+        LOG.error("Eccezione nella scrittura della pagina sul db:%s" % ex)
         #raise ex
         return None
 
@@ -95,7 +106,7 @@ def update_page(page_id, new_menu_title, visible):
         db.session.commit()
         return page.path
     except Exception as ex:
-        print("Eccezione nell'aggiornamento della pagina sul db:%s" % ex)
+        LOG.error("Eccezione nell'aggiornamento della pagina sul db:%s" % ex)
         #raise ex
         return None
 
@@ -115,7 +126,7 @@ def update_pages_index(id_list):
         result = {"success": True, "message": "Ordine delle pagine aggiornato"}
         return result
     except Exception as ex:
-        print("Eccezione salvataggio ordinamento:%s" % ex)
+        LOG.error("Eccezione salvataggio ordinamento:%s" % ex)
         db.session.rollback()
         result =  {"success": False, "message": "Eccezione salvataggio ordinamento:%s" % ex}
         return result
@@ -126,10 +137,10 @@ def delete_page(page_id):
     if page==None:
         return None
     filepath = page.path
-    print("Sto rimuovendo la pagina con id:%s" % page.id)
+    LOG.info("Sto rimuovendo la pagina con id:%s" % page.id)
     db.session.query(Page).filter(Page.id == page.id).delete(synchronize_session=False)
     db.session.commit()
-    print("Pagina rimossa")
+    LOG.info("Pagina rimossa")
     return filepath
 
 
