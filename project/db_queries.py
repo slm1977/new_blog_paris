@@ -3,6 +3,8 @@ from project.models import Page, Restaurant, Zone
 from flask import url_for
 
 import logging
+import time
+
 LOG = logging.getLogger(__name__)
 
 
@@ -30,6 +32,10 @@ def update_zones(zones, zones_id):
             zone.name = new_zone_dict["name"]
             zone.visible = bool(new_zone_dict["visible"])
             zone.deleted = bool(new_zone_dict["deleted"])
+
+            if zone.deleted:
+                zone.name = "%s_deleted_%s" % (zone.name, int(time.time()))
+
             zone.index = index
             db.session.commit()
             index +=1
@@ -47,14 +53,16 @@ def get_last_created_page():
 
 def add_zone_to_db(zone_title, index=1):
     try:
-        new_zone = Zone(name=zone_title, index=index)
+        new_zone = Zone(name=zone_title, index=index, visible=False, deleted=False)
         db.session.add(new_zone)
         db.session.commit()
     except Exception as ex:
         LOG.error("Eccezione nella scrittura del quartiere sul db:%s" % ex)
-        #raise ex
-        return None
-    return None
+        result = {"success": False, "message": "Zona non aggiunta: %s" % ex}
+        return result
+    result = {"success": True, "message": "Zona aggiunta con successo"}
+
+    return result
 
 
 def add_restaurant_to_db(name, address, topic, description, zone_id, orari, index=1):

@@ -26,8 +26,17 @@ ol.serialization li.placeholder:before {
 
 <h1>Modifica delle zone del Libro dei Ristoranti</h1>
 
+<form style="margin-left:10px;" id="adding_form" method="POST", action="{{url_for("restaurants.add_zone")}}">
+<div class="field" style="margin-left:10px;">
+        <div class="control">
+            <label for="new_zone_name">Nome di una nuova zona: </label>
+            <input name="new_zone_name" id="new_zone_name" type="text" value="" required/>
+            <button type="submit" id="addButton" class="btn btn-primary">Aggiungi</button>
+        </div>
+    </div>
+</form>
+
 <form style="margin-left:10px;" id="sorting_form" method="POST", action="{{url_for("restaurants.edit_zones")}}">
-<p>
 
 
 <!-- Button trigger modal -->
@@ -39,7 +48,7 @@ ol.serialization li.placeholder:before {
 
 <div style="margin-top:10px;" class="alert" role="alert" id="formResponse">
 </div>
-</p>
+
 
 
 <!--
@@ -48,12 +57,12 @@ ol.serialization li.placeholder:before {
     </div>
 -->
 
-</form>
+
 <ol class='serialization'>
   {% for z in zones %}
   <li id="{{z.id}}" class="serialize alert alert-success">
       <div>
-          <input id="txt_{{z.id}}" type="text" value="{{z.name}}" onchange="notifyChanges()"/>
+          <input id="txt_{{z.id}}" type="text" value="{{z.name}}" onchange="notifyChanges()" required/>
 
           <input id="check_{{z.id}}" type="checkbox" onchange="notifyChanges()" {{'checked' if z != None and z.visible==True }}>
           <label for="check_{{z.id}}">Visibile</label>
@@ -66,7 +75,7 @@ ol.serialization li.placeholder:before {
 
   </li>
    {% endfor %}
-
+</form>
 
 
     <!-- Modal -->
@@ -180,6 +189,55 @@ ol.serialization li.placeholder:before {
                     exitOrSave();
                   });
 
+
+            var frmAdd = $('#adding_form');
+
+
+
+
+          frmAdd.submit(function (e){
+
+           e.preventDefault();
+                    $.ajax({
+                    type: "POST",
+                    url: "{{url_for("restaurants.add_zone")}}",
+                    data: {
+                            'name':   $('#new_zone_name').val(),
+
+                            },
+                    success: function (data) {
+                        console.log('Submission was successful.');
+                        console.log(data);
+                        if (data["success"]  == true)
+                            {
+                              window.location.reload();
+                            }
+                           else
+
+                              {
+                                $('#formResponse').removeClass("alert-success");
+                                $('#formResponse').addClass("alert-danger");
+                                $('#formResponse').html(data["message"]);
+
+                              }
+
+                    },
+                    error: function (data) {
+                        console.log('An error occurred.');
+                        console.log(data);
+                        // in caso di problemi annullo la richiesta di uscita
+                        exitRequest==false;
+                        $('#formResponse').removeClass("alert-success");
+                        $('#formResponse').addClass("alert-danger");
+                        $('#formResponse').html("Si sono verificati problemi nel salvataggio: %s" % data);
+                    },
+                });// AJAX end
+
+              });  // function end
+
+
+
+
         var group = $("ol.serialization").sortable({
                 group: 'limited_drop_targets',
                 isValidTarget: function  ($item, container) {
@@ -267,6 +325,8 @@ ol.serialization li.placeholder:before {
 
                                 if (exitRequest==true)
                                 window.location.href="{{url_for('main.home')}}";
+                                else
+                                window.location.reload();
                             }
                            else
 

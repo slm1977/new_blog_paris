@@ -6,12 +6,22 @@ import json
 
 from project.models import Restaurant,Zone, Page
 from . import db
-from .db_queries import get_zones, update_zones
+from .db_queries import get_zones, update_zones, add_zone_to_db
 
 import logging
 LOG = logging.getLogger(__name__)
 
 restaurants = Blueprint('restaurants', __name__, template_folder='templates',static_folder='static')
+
+
+
+@restaurants.route("/zones/add", methods=["POST"])
+@login_required
+def add_zone():
+    zone_name = request.form["name"]
+    result = add_zone_to_db(zone_title=zone_name,index=0)
+    return jsonify(result)
+
 
 @restaurants.route("/zones/edit", methods=["GET", "POST"])
 @login_required
