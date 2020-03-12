@@ -48,6 +48,8 @@ class Restaurant(UserMixin, db.Model):
     index = db.Column(db.Integer)
     orari = db.Column(db.String(100))
     deleted = db.Column(db.Boolean, server_default=expression.false(), nullable=False)
+    latitude = db.Column(db.String(100))
+    longitude = db.Column(db.String(100))
 
 #https://stackoverflow.com/questions/46055661/flask-many-to-many-relation-leads-to-multiple-classes-found-for-path
 #https://flask-sqlalchemy.palletsprojects.com/en/2.x/models/

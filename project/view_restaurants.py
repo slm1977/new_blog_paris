@@ -47,3 +47,16 @@ def edit_zones():
         print(zones)
         result = update_zones(zones, zones_id)
         return jsonify(result)
+
+
+@restaurants.route("/restaurant/edit/<restaurant_id>/", methods=["GET"])
+@login_required
+def edit_restaurant(restaurant_id):
+    restaurant = Restaurant.query.filter_by(id=restaurant_id).first()
+    zones = get_zones()
+    return render_template("restaurants/restaurant_editing.html", restaurant=restaurant, zones=zones)
+
+@restaurants.route("/restaurants/save", methods=["POST"])
+@login_required
+def save_restaurant():
+    pass
