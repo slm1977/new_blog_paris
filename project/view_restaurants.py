@@ -6,7 +6,7 @@ import json
 
 from project.models import Restaurant,Zone, Page
 from . import db
-from .db_queries import get_zones, update_zones, add_zone_to_db
+from .db_queries import get_zones, update_zones, add_zone_to_db, update_restaurant
 
 import logging
 LOG = logging.getLogger(__name__)
@@ -59,4 +59,31 @@ def edit_restaurant(restaurant_id):
 @restaurants.route("/restaurants/save", methods=["POST"])
 @login_required
 def save_restaurant():
-    pass
+    print("Saving restaurant...")
+    name = request.form.get('title')
+    rest_id = request.form.get('id')
+    visible = True if request.form.get('visible')=="true" else False
+    zone_id = request.form.get('zone')
+    address = request.form.get('address')
+    orari = request.form.get('orari')
+    topic = request.form.get('topic')
+    description = request.form.get('description')
+    index = 1 # default... non utilizzato
+    latitude =  request.form.get('latitude')
+    longitude = request.form.get('longitude')
+    deleted = False
+
+    print("Lat:%s Long:%s Topic:%s Desc:%s\nOrari:%s Address:%s Zone:%s Title:%s Id:%s visible:  %s" % 
+    (latitude, longitude,topic, description, orari, address,zone_id, name , rest_id, visible))
+
+    res = update_restaurant(rest_id, name, address, topic, description, zone_id, orari, 
+                            visible, latitude, longitude, index)
+    if res!=None:
+        result = {"success" : True,
+                    "message" : "Ristorante salvato con successo lat:%s lon:%s" % (latitude, longitude) ,
+                    "restaurant_id" : rest_id}
+    else:
+        result =  {"success" : False,
+                    "message" : "Si è verificato un problema nel salvataggio del ristorante %s" % rest_id ,
+                    "restaurant_id" : rest_id}
+    return  jsonify(result)

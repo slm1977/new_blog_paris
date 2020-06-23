@@ -1,5 +1,8 @@
 from flask_login import UserMixin
+
+# libreria python che interagisce coi DB
 from sqlalchemy.sql import expression
+
 from project import db
 
 class User(UserMixin, db.Model):
@@ -14,6 +17,7 @@ class User(UserMixin, db.Model):
 class Page(UserMixin, db.Model):
     __table_name__ = "Page"
     __table_args__ = {'extend_existing': True}
+
     id = db.Column(db.Integer, primary_key=True) # primary keys are required by SQLAlchemy
     menu_title = db.Column(db.String(1000), unique=True)
     path = db.Column(db.String(1000), unique=True)
@@ -47,6 +51,7 @@ class Restaurant(UserMixin, db.Model):
     zone_id = db.Column(db.Integer, db.ForeignKey('zone.id'))
     index = db.Column(db.Integer)
     orari = db.Column(db.String(100))
+    visible = db.Column(db.Boolean, server_default=expression.false(), nullable=False)
     deleted = db.Column(db.Boolean, server_default=expression.false(), nullable=False)
     latitude = db.Column(db.String(100))
     longitude = db.Column(db.String(100))

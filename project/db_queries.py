@@ -81,6 +81,28 @@ def add_restaurant_to_db(name, address, topic, description, zone_id, orari, inde
     return None
 
 
+def update_restaurant(rest_id, name, address, topic, description, zone_id, orari, visible, latitude, longitude, index=1):
+
+    try:
+        rest = Restaurant.query.get(rest_id)
+        rest.name = name
+        rest.address = address
+        rest.topic = topic
+        rest.description = description
+        rest.zone_id = zone_id
+        rest.orari = orari
+        rest.latitude = latitude
+        rest.longitude = longitude
+        rest.visible = bool(visible)
+        rest.deleted = bool(False)
+        rest.index = index
+        db.session.commit()
+        return rest_id
+    except Exception as ex:
+        LOG.error("Eccezione nell'aggiornamento del ristorante %s sul db:%s" % (rest_id,ex))
+        #raise ex
+        return None
+
 
 def add_page_to_db(menu_title, visible, index=None):
     try:

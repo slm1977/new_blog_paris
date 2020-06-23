@@ -4,7 +4,6 @@
 
 <form style="margin-left:10px;" id="editing_form" method="POST", action="{{url_for("restaurants.save_restaurant")}}">
 <p>
-
     <div class="field">
         <div class="control">
             <label for="rest_title">Nome del ristorante: </label>
@@ -161,8 +160,8 @@
     var modified = false;
     var restaurant_id = {{restaurant.id if restaurant != None else -1 }}
 
-    var latitude = "48.8925";
-    var longitude = "2.3444";
+    var latitude = {{restaurant.latitude if restaurant != None else "48.8925" }}
+    var longitude =  {{restaurant.longitude if restaurant != None else "2.3444" }}
     var map = null;
     var marker = null;
     var GEO_KEY="";
@@ -267,10 +266,17 @@ function exitFromEditing(saveOnExit)
                 $.ajax({
                     type: frm.attr('method'),
                     url: frm.attr('action'),
-                    data: { 'content': CKEDITOR.instances.editor.getData(),
-                             'menu_title' : $('#menu_title').val(),
+                    data: { 
+                             'title' : $('#rest_title').val(),
                              'visible' : $('#visible_state').is(":checked"),
-                             'id' : page_id
+                             'zone' : $('#zones').children("option:selected").val(),
+                             'id' : restaurant_id,
+                             'address' : $('#address').val(),
+                             'orari' : $('#orari').val(),
+                             'topic' : $('#topic').val(),
+                             'description' : $('#description').val(),
+                             'latitude': latitude,
+                             'longitude' : longitude
                         },
                     success: function (data) {
                         console.log('Submission was successful.');
@@ -278,8 +284,8 @@ function exitFromEditing(saveOnExit)
                         if (data["success"]  == true)
                             {
                                 modified = false;
-                                // aggiorno il page_id della pagina!
-                                page_id = parseInt(data["page_id"]);
+                                // aggiorno il restaurant_id della pagina!
+                                restaurant_id = parseInt(data["restaurant_id"]);
 
                                 $('#formResponse').removeClass("alert-danger");
                                 $('#formResponse').addClass("alert-success");
@@ -321,7 +327,7 @@ function exitFromEditing(saveOnExit)
 
     //https://gis.stackexchange.com/questions/43766/downloading-metro-stations-of-paris-from-openstreetmap
       $(function()  {
-        console.log("DOC PRONTO");
+        console.log("DOC PRONTO in reastaurant_editing");
 
 
          // Where you want to render the map.
@@ -349,6 +355,11 @@ function exitFromEditing(saveOnExit)
           let marker_coords = L.latLng( latitude, longitude);
 
           marker = L.marker(marker_coords, {draggable:true});
+          marker.addEventListener('move',
+          (ev) => { console.log(`Marker moved::: ${ev.latlng["lat"]},${ev.latlng["lng"] }`); console.log(ev)
+          latitude = ev.latlng["lat"]; longitude = ev.latlng["lng"]; 
+        }, false);
+
           marker.addTo(map);
           // Set map's center to target with zoom 14.
           map.setView(marker_coords, 12);
@@ -359,6 +370,7 @@ function exitFromEditing(saveOnExit)
 
 
     function geocode(query){
+    console.log("Richiamato GEOCODE");
       $.ajax({
         url: 'https://api.opencagedata.com/geocode/v1/json',
         method: 'GET',

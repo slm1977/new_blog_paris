@@ -7,20 +7,28 @@ from flask_bootstrap import Bootstrap
 
 from werkzeug.utils import secure_filename, find_modules, import_string
 
+print("Inizializzazione db")
 # init SQLAlchemy so we can use it later in our models
 db = SQLAlchemy()
 
+print("Import User module..")
 from project.models import User
 
+print("Import auth_blueprint..")
 from project.auth import auth as auth_blueprint
+print("Import main_blueprint..")
 from project.main import main as main_blueprint
+print("Import view_pages_blueprint..")
 from project.view_pages import pages as pages_blueprint
+print("Import view_reastaurants_blueprint..")
 from project.view_restaurants import restaurants as restaurants_blueprint
 
 from project.ristoranti import ristoranti as ristoranti
 from project import db_queries
 
 import logging
+
+print("Fine degli import")
 
 def configure_logging():
     # register root logging
@@ -70,5 +78,14 @@ def create_app():
 
     return app
 
+print("Creting app...")
 app = create_app()
-app.run(debug=True)
+print("app created")
+#https://stackoverflow.com/questions/36649703/get-root-path-of-flask-application
+#https://stackoverflow.com/questions/36649703/get-root-path-of-flask-application
+#https://flask.palletsprojects.com/en/1.1.x/patterns/appfactories/
+app_instance_path =app.instance_path
+app_root_path = app.root_path
+print("app_instance_path:%s" % app_instance_path)
+print("app_root_path:%s" % app_root_path)
+#app.run(debug=True)

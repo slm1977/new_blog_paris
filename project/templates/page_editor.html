@@ -8,7 +8,8 @@
     <div class="field">
         <div class="control">
             <label for="menu_title">Voce sul menu della pagina: </label>
-            <input name="menu_title" id="menu_title"  onchange="notifyChanges()" type="text" value="{{page.menu_title if page != None }}" required/><br>
+            <input name="menu_title" id="menu_title"  onchange="notifyChanges()" type="text" 
+            value="{{page.menu_title if page != None }}" required/><br>
 
         </div>
     </div>
@@ -17,7 +18,8 @@
 <div class="field">
     <div class="control">
         <label for="visible_state">Rendi la pagina visibile agli utenti: </label>
-        <input class="custom-control-input" type="checkbox" onchange="notifyChanges()"  id="visible_state" {{'checked' if page != None and page.visible==True }}/><br>
+        <input class="custom-control-input" type="checkbox" onchange="notifyChanges()"  
+              id="visible_state" {{'checked' if page != None and page.visible==True }}/><br>
     </div>
 </div>
 
