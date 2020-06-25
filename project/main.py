@@ -1,6 +1,7 @@
 
-from flask import Flask,  Blueprint, render_template, request, redirect, url_for, send_from_directory, jsonify
+from flask import Flask, flash, send_from_directory, current_app,  Blueprint, render_template, request, redirect, url_for, send_from_directory, jsonify
 from flask_login import login_required, current_user
+from werkzeug.utils import secure_filename
 import os
 
 
@@ -121,7 +122,7 @@ def video(quartiere,n):
     return render_template('rest_page_right.html', rist=r[n], myvideo=myvideo)
 
 
-
+ 
 #
 # FILE UPLOAD CODE
 #
@@ -129,19 +130,14 @@ def video(quartiere,n):
 #https://flask.palletsprojects.com/en/1.1.x/patterns/fileuploads/
 
 def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
-
-@main.route("/uploaded/<filename>/")
-def uploaded_file(filename):
-    return send_from_directory(app.config['UPLOAD_FOLDER'],
-                               filename)
-
-
+    ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+     
 
 @main.route('/upload/', methods=['GET', 'POST'])
+@login_required
 def upload_file():
+    print("RICHIAMATO UPLOAD")
     if request.method == 'POST':
         # check if the post request has the file part
         if 'file' not in request.files:
@@ -155,16 +151,21 @@ def upload_file():
             return redirect(request.url)
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            return redirect(url_for("main.uploaded_file", filename=filename))
-
+            file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
+            return url_for('main.uploaded_file',
+                                    filename=filename)
     return '''
     <!doctype html>
     <title>Upload new File</title>
     <h1>Upload new File</h1>
-    <form method=post enctype=multipart/form-data action="/upload/">
+    <form method=post enctype=multipart/form-data>
       <input type=file name=file>
       <input type=submit value=Upload>
     </form>
     '''
+
+@main.route('/uploads/<filename>')
+def uploaded_file(filename):
+    return send_from_directory(current_app.config['UPLOAD_FOLDER'],
+                               filename)
 

@@ -1,5 +1,6 @@
-from flask import Flask, current_app,  Blueprint, render_template, request, redirect, url_for, jsonify
+from flask import Flask, Blueprint, render_template, request, redirect, url_for, jsonify
 from flask_login import login_required, current_user
+
 import os
 import time
 import json
@@ -11,7 +12,9 @@ from .db_queries import get_zones, update_zones, add_zone_to_db, update_restaura
 import logging
 LOG = logging.getLogger(__name__)
 
+
 restaurants = Blueprint('restaurants', __name__, template_folder='templates',static_folder='static')
+
 
 
 

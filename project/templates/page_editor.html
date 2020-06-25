@@ -268,15 +268,20 @@ function exitFromEditing(saveOnExit)
  document.getElementById("editor").value = "<p>Some other editor data.</p>";
     //CKFinder.setupCKEditor();
     var ed = CKEDITOR.replace( 'editor' ,{
-                                            toolbar: 'Basic',
-                                            language: 'it',
-                                            uiColor: '#F400A1',
-                                            contentsCss : '{{url_for('.static', filename='css/home.css')}}',
-                                            font_names :
-                                                        'Arial/Arial, Helvetica, sans-serif;' +
-                                                        'Times New Roman/Times New Roman, Times, serif;' +
-                                                        'Verdana;' +
-                                                        'Dancing Script OT;'
+            toolbar: 'Full',
+            language: 'it',
+            uiColor: '#F400A1',
+            contentsCss : '{{url_for('.static', filename='css/home.css')}}',
+            font_names :
+                        'Arial/Arial, Helvetica, sans-serif;' +
+                        'Times New Roman/Times New Roman, Times, serif;' +
+                        'Verdana;' +
+                        'Dancing Script OT;',
+            extraPlugins: ['widgetselection','lineutils','widget','image2','simpleImageUpload'],//['image2', 'simpleImageUpload','emoji'],
+            uploadUrl : '/upload/',
+            dataParser: (data) => { console.log(`CKeditor upload image data Parser: ${data}`)}
+
+                                             
                                             }
                                        );
 

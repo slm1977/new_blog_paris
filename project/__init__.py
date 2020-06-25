@@ -27,7 +27,7 @@ from project.ristoranti import ristoranti as ristoranti
 from project import db_queries
 
 import logging
-
+import os
 print("Fine degli import")
 
 def configure_logging():
@@ -41,11 +41,10 @@ def create_app():
     app = Flask(__name__)
     Bootstrap(app)
     configure_logging()
-
-    UPLOAD_FOLDER = 'static/uploaded_images'
-    ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
-    UPLOAD_FOLDER = 'static/uploaded_images'
-
+    # https://flask.palletsprojects.com/en/1.1.x/patterns/fileuploads/
+    UPLOAD_FOLDER =  os.path.join(app.root_path, 'static/uploaded_images')
+    
+    
     app.config['SECRET_KEY'] = '9OLWxND4o83j4K4iuopO'
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///paris_blog_db.sqlite'
     app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
