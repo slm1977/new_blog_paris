@@ -137,20 +137,23 @@ def allowed_file(filename):
 @main.route('/upload/', methods=['GET', 'POST'])
 @login_required
 def upload_file():
-    print("RICHIAMATO UPLOAD")
+    print("RICHIAMATO UPLOAD con method:%s" % request.method)
     if request.method == 'POST':
         # check if the post request has the file part
         if 'file' not in request.files:
             flash('No file part')
+            print("NO FILE PART")
             return redirect(request.url)
         file = request.files['file']
         # if user does not select file, browser also
         # submit an empty part without filename
         if file.filename == '':
             flash('No selected file')
+            print("NO SELECTED FILE")
             return redirect(request.url)
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
+            print("IMMAGINE SALVATA CON SUCCESSO")
             file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
             return url_for('main.uploaded_file',
                                     filename=filename)

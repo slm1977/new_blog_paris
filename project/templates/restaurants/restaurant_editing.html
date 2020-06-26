@@ -76,6 +76,15 @@
 </div>
 </br>
 
+<div class="field">
+  <label for="description" style="display:block;">Galleria delle immagini</label>
+
+  
+</div>
+</br>
+
+
+
 <!-- Button trigger modal -->
     <button type="button" id="exitButton" class="btn btn-primary">
       Esci
@@ -94,6 +103,54 @@
 
 
 </form>
+
+<!-- Photo gallery-->
+  <input type=file name=file>
+<div id="addedImages"></div>
+
+<ul id="slideshow">
+  
+
+  <li>
+    <h3>TinySlideshow v1</h3>
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam ut urna. Mauris nulla. Donec nec mauris. Proin nulla dolor, bibendum et, dapibus in, euismod ut, felis.</p>
+    <img src="{{url_for('.static', filename='js/TinySlideshow-master/photos/orange-fish.jpg')}}" width="500"  alt="Orange Fish"/> 
+    <img src="{{url_for('.static', filename='js/TinySlideshow-master/photos/orange-fish.jpg')}}" width="125" alt="Orange Fish"/> 
+   
+    <!--
+    <img src="{{url_for('.static', filename='js/TinySlideshow-master/thumbnails/orange-fish-thumb.jpg')}}" class="thumbnail"/>
+ -->
+  </li>
+
+  <li id="imageFromCanvas">
+    <h3>TinySlideshow v1</h3>
+    <p>Seconda di test</p>
+    <canvas id="canvas" width=300></canvas>
+    <!--<img src="/uploads/Nu_Red_3.jpg" width="125" alt="Babbo con Isabella"/>-->
+  </li>
+
+  
+</ul>
+<div id="wrapper">
+  <div id="fullsize">
+    <div id="imgprev" class="imgnav" title="Previous Image"></div>
+    <div id="imglink"></div>
+    <div id="imgnext" class="imgnav" title="Next Image"></div>
+    <div id="image"></div>
+    <div id="information">
+      <h3></h3>
+      <p></p>
+    </div>
+  </div>
+  <div id="thumbnails">
+    <div id="slideleft" title="Slide Left"></div>
+    <div id="slidearea">
+      <div id="slider"></div>
+    </div>
+    <div id="slideright" title="Slide Right"></div>
+  </div>
+</div>
+<!-- End of Photo Gallery-->
 
 
 <!-- Modal Save Page -->
@@ -151,6 +208,99 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://unpkg.com/leaflet@1.0.1/dist/leaflet.js"></script>
+    <script src="{{url_for('static', filename='js/TinySlideshow-master/script.js')}}"></script>
+<script type="text/javascript">
+	$T('slideshow').style.display='none';
+	$T('wrapper').style.display='block';
+	var slideshow=new TINY.slideshow("slideshow");
+	window.onload=function(){
+	    initSlideshow();
+  }
+
+  function initSlideshow()
+  {
+    slideshow.auto=false;
+		slideshow.speed=5;
+		slideshow.link=""; //"linkhover";
+		slideshow.info="information";
+		slideshow.thumbs="slider";
+		slideshow.left="slideleft";
+		slideshow.right="slideright";
+		slideshow.scrollSpeed=4;
+		slideshow.spacing=0;
+		slideshow.active="#fff";
+		slideshow.init("slideshow","image","imgprev","imgnext","imglink","slidearea");
+  }
+  
+  $(document).ready(function(){
+
+        var fileDialog = $('input[type="file"]');
+        fileDialog.on('change', function (e) {
+        var uploadUrl = "/upload/";
+        var file = fileDialog[0].files[0];
+        var imageData = new FormData();
+        imageData.append('file', file);
+
+        $.ajax({
+          url: uploadUrl,
+          type: 'POST',
+          contentType: false,
+          processData: false,
+          data: imageData,
+        }).done(function(done) {
+          console.log(`Aggiungo la immagine ${done} alla galleria`);
+          $("#addedImages").append(`<p>${done}</p>`);
+
+          $("#slideshow").append(`
+          <li>
+            <h3>Nuova immagine</h3>
+            <p>Didascalia</p>
+            <img src="${done}" width:"500px" alt="Immagine caricata"/>
+            <img src="${done}" width:"125px"  class="thumbnail"/>
+          </li>
+          `);
+          // reload the gallery!
+           initSlideshow();
+        })
+
+        })
+        });
+</script>
+
+<script type="text/javascript">
+  var canvas = document.getElementById("canvas");
+        var ctx = canvas.getContext("2d");
+        var img = new Image();
+
+        img.onload = function () {
+
+        // set size proportional to image
+        canvas.height = canvas.width * (img.height / img.width);
+
+        // step 1 - resize to 50%
+        var oc = document.createElement('canvas'),
+          octx = oc.getContext('2d');
+
+        oc.width = img.width * 0.5;
+        oc.height = img.height * 0.5;
+        octx.drawImage(img, 0, 0, oc.width, oc.height);
+
+        // step 2
+        octx.drawImage(oc, 0, 0, oc.width * 0.5, oc.height * 0.5);
+
+        // step 3, resize to final size
+        ctx.drawImage(oc, 0, 0, oc.width * 0.5, oc.height * 0.5,
+        0, 0, canvas.width, canvas.height);
+
+        // aggiungo la immagine dal canvas ridimensionata
+        $("#imageFromCanvas").append(`<img src="${canvas.toDataURL()}" alt="Babbo con Isabella"/>`)
+
+        }
+        img.src = "/uploads/Nu_Red_3.jpg";
+
+       
+
+</script>
 
 
     <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
@@ -366,8 +516,6 @@ function exitFromEditing(saveOnExit)
         });
 
 
-         <!-- Load jQuery from a CDN or your server -->
-
 
     function geocode(query){
     console.log("Richiamato GEOCODE");
@@ -417,7 +565,8 @@ function exitFromEditing(saveOnExit)
       geocode(address);
     }
 
-
+   
+   
 // Fine gestione della mappa del ristorante
 
 
@@ -431,7 +580,7 @@ function exitFromEditing(saveOnExit)
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" crossorigin="anonymous">
 <link rel="stylesheet" href="{{url_for('.static', filename='css/home.css')}}">
 <link href="https://unpkg.com/leaflet@1.0.1/dist/leaflet.css" rel="stylesheet"/>
-
+<link rel="stylesheet" href="{{url_for('.static', filename='js/TinySlideshow-master/style.css')}}">
 <style>
  /* Set the size of the div element that contains the map */
       .osm-map {
@@ -443,6 +592,11 @@ function exitFromEditing(saveOnExit)
         margin-top: 20px;
 
        }
+
+       img.resize {
+                width:200px;
+                height:40px;
+              }
 </style>
 
 {% endblock %}
