@@ -75,12 +75,13 @@ def save_restaurant():
     latitude =  request.form.get('latitude')
     longitude = request.form.get('longitude')
     deleted = False
+    images = request.form.get('images')
 
-    print("Lat:%s Long:%s Topic:%s Desc:%s\nOrari:%s Address:%s Zone:%s Title:%s Id:%s visible:  %s" % 
-    (latitude, longitude,topic, description, orari, address,zone_id, name , rest_id, visible))
+    print("Lat:%s Long:%s Topic:%s Desc:%s\nOrari:%s Address:%s Zone:%s Title:%s Id:%s visible:%s\nimages:%s" % 
+    (latitude, longitude,topic, description, orari, address,zone_id, name , rest_id, visible, images))
 
     res = update_restaurant(rest_id, name, address, topic, description, zone_id, orari, 
-                            visible, latitude, longitude, index)
+                            visible, latitude, longitude, images, index)
     if res!=None:
         result = {"success" : True,
                     "message" : "Ristorante salvato con successo lat:%s lon:%s" % (latitude, longitude) ,

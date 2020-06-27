@@ -81,7 +81,8 @@ def add_restaurant_to_db(name, address, topic, description, zone_id, orari, inde
     return None
 
 
-def update_restaurant(rest_id, name, address, topic, description, zone_id, orari, visible, latitude, longitude, index=1):
+def update_restaurant(rest_id, name, address, topic, description, zone_id, orari, 
+visible, latitude, longitude, images, index=1):
 
     try:
         rest = Restaurant.query.get(rest_id)
@@ -95,6 +96,7 @@ def update_restaurant(rest_id, name, address, topic, description, zone_id, orari
         rest.longitude = longitude
         rest.visible = bool(visible)
         rest.deleted = bool(False)
+        rest.images = images
         rest.index = index
         db.session.commit()
         return rest_id
