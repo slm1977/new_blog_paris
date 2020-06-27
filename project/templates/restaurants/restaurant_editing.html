@@ -33,6 +33,7 @@
 </select>
 </div>
 
+ 
 <div class="field">
         <div class="control">
             <label for="orari">Orari: </label>
@@ -79,58 +80,34 @@
 <div class="field">
   <label for="description" style="display:block;">Galleria delle immagini</label>
 
-  <!-- Photo gallery-->
+ <!-- Photo gallery-->
 <div>
   <input type=file name=file>
-<div id="addedImages"></div>
-<canvas id="canvas" width=300 hidden></canvas>
+<div id="addedImages">
 
-<ul id="slideshow">
-  
-<!--
-  <li>
-    <h3>TinySlideshow v1</h3>
-    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam ut urna. Mauris nulla. Donec nec mauris. Proin nulla dolor, bibendum et, dapibus in, euismod ut, felis.</p>
-    <img src="{{url_for('.static', filename='js/TinySlideshow-master/photos/orange-fish.jpg')}}" width="500"  alt="Orange Fish"/> 
-    <img src="{{url_for('.static', filename='js/TinySlideshow-master/photos/orange-fish.jpg')}}" width="125" alt="Orange Fish"/> 
-   
-    <!--
-    <img src="{{url_for('.static', filename='js/TinySlideshow-master/thumbnails/orange-fish-thumb.jpg')}}" class="thumbnail"/>
- 
-  </li>
-
-  <li id="imageFromCanvas">
-    <h3>TinySlideshow v1</h3>
-    <p>Seconda di test</p>
-  </li>
--->
-
-</ul>
-
-
-<div id="wrapper">
-  <div id="fullsize">
-    <div id="imgprev" class="imgnav" title="Previous Image"></div>
-    <div id="imglink"></div>
-    <div id="imgnext" class="imgnav" title="Next Image"></div>
-    <div id="image"></div>
-    <div id="information">
-      <h3></h3>
-      <p></p>
-    </div>
-  </div>
- 
-  <div id="thumbnails">
-    <div id="slideleft" title="Slide Left"></div>
-    <div id="slidearea">
-      <div id="slider"></div>
-    </div>
-    <div id="slideright" title="Slide Right"></div>
-  </div>
 </div>
-<br>
-<br>
+<br><br>
 
+<div id="image-slider" class="splide js-thumbnails">
+	<div class="splide__track">
+		<ul class="splide__list">
+			<li class="splide__slide">
+				<img src="http://127.0.0.1:5000/uploads/Ca64_3.jpg">
+      </li>
+			<li class="splide__slide">
+				<img src="http://127.0.0.1:5000/uploads/Ca64_4.jpg">
+			</li>
+			<li class="splide__slide">
+				<img src="http://127.0.0.1:5000/uploads/DSC_0969.JPG">
+      </li>
+    </ul>
+      
+  </div>
+
+</div>
+
+
+<p>Fine galleria</p>
 </div>
 <!-- End of Photo Gallery-->
   
@@ -215,32 +192,63 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://unpkg.com/leaflet@1.0.1/dist/leaflet.js"></script>
-    <script src="{{url_for('static', filename='js/TinySlideshow-master/script.js')}}"></script>
-<script type="text/javascript">
-	$T('slideshow').style.display='none';
-	$T('wrapper').style.display='block';
-	var slideshow=new TINY.slideshow("slideshow");
-	window.onload=function(){
-	    initSlideshow();
-  }
+    
+    <script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@latest/dist/js/splide.min.js"></script>
 
-  function initSlideshow()
-  {
-    slideshow.auto=true;
-		slideshow.speed=5;
-		slideshow.link=""; //"linkhover";
-		slideshow.info="information";
-		slideshow.thumbs="slider";
-		slideshow.left="slideleft";
-		slideshow.right="slideright";
-		slideshow.scrollSpeed=4;
-		slideshow.spacing=0;
-		slideshow.active="#fff";
-		slideshow.init("slideshow","image","imgprev","imgnext","imglink","slidearea");
-  }
+<script type="text/javascript">
+
+  console.log("Aggiungo listener per SPLIDE");
   
   $(document).ready(function(){
 
+    splide = new Splide( '#image-slider', {
+      fixedWidth : 100,
+      height     : 60,
+      gap        : 10,
+      rewind     : true,
+      cover      : true,
+      pagination : false,
+      isNavigation: true,
+      focus      : 'center',
+      breakpoints : {
+        '600': {
+          fixedWidth: 66,
+          height    : 40,
+		}
+	}
+      } ).mount();
+
+      splide.on( 'active', function(slide) {
+      console.log(`Slide ${slide.index} active`);
+      //console.log(slide);
+
+      // On click listeners
+      // Collect elements of thumbnails.
+  var images = document.querySelectorAll( '.js-thumbnails li' );
+
+	var activeImage;
+	var activeClass = 'is-active';
+
+	// Listen a click event and toggle a class.
+	for ( let i = 0, len = images.length; i < len; i++ ) {
+    var image = images[ i ];
+
+    splide.on( 'click', function () {
+      console.log(`Image ${image} clicked`);
+      if ( activeImage !== image ) {
+				//activeImage.classList.remove( activeClass );
+				//image.classList.add( activeClass );
+				splide.go( i );
+				activeImage = image;
+			}
+     
+    }, image);
+  }
+
+
+} );
+        
+    console.log(`valore di splide: ${splide}`);
         var fileDialog = $('input[type="file"]');
         fileDialog.on('change', function (e) {
         var uploadUrl = "/upload/";
@@ -258,96 +266,17 @@
           console.log(`Aggiungo la immagine ${done} alla galleria`);
           $("#addedImages").append(`<p>${done}</p>`);
 
-          addRescaledImageUrl(done);
+          
+          splide.add(`<li class="splide__slide">
+				                <img src="${done}">
+                      </li>` );
           
         })
 
         })
         });
 
-
-        function addRescaledImageUrl(imgSource)
-        {
-          let canvas = document.getElementById("canvas");
-          let percScale = 1;
-          let ctx = canvas.getContext("2d");
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-          let img = new Image();
-              img.onload = function () {
-          console.log("Procedo a ridimensionare la immagine");
-          // set size proportional to image
-          canvas.height = canvas.width * (img.height / img.width);
-
-        // step 1 - resize to 50%
-        let oc = document.createElement('canvas'),
-          octx = oc.getContext('2d');
-
-        oc.width = img.width *percScale;
-        oc.height = img.height * percScale;
-        octx.drawImage(img, 0, 0, oc.width, oc.height);
-
-        // step 2
-        octx.drawImage(oc, 0, 0, oc.width * percScale, oc.height * percScale);
-
-        // step 3, resize to final size
-        ctx.drawImage(oc, 0, 0, oc.width * percScale, oc.height * percScale,
-        0, 0, canvas.width, canvas.height);
-
-        // aggiungo la immagine dal canvas ridimensionata
-        //$("#imageFromCanvas").append(`<img src="${canvas.toDataURL()}" alt="Babbo con Isabella"/>`)
-        //$("#imageFromCanvas").append(`<img src="${canvas.toDataURL()}" width="125px" alt="Babbo con Isabella"/>`)
-        $("#slideshow").append(`
-          <li>
-            <h3>Nuova immagine</h3>
-            <p>Didascalia</p>
-            <img src="${canvas.toDataURL()}" width:"500px" alt="Immagine caricata"/>
-            <img src="${canvas.toDataURL()}" width:"125px" class="thumbnail" />
-          </li>
-          `);
-            // reload the gallery!
-            initSlideshow();
-
-        }
-        console.log(`Assegno la sorgente ${imgSource} alla nuova immagine`);
-        img.src = imgSource;
-        }
 </script>
-
-<script type="text/javascript">
-  var canvas = document.getElementById("canvas");
-        var ctx = canvas.getContext("2d");
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        var img = new Image();
-
-        img.onload = function () {
-
-        // set size proportional to image
-        canvas.height = canvas.width * (img.height / img.width);
-
-        // step 1 - resize to 50%
-        var oc = document.createElement('canvas'),
-          octx = oc.getContext('2d');
-
-        oc.width = img.width * 0.5;
-        oc.height = img.height * 0.5;
-        octx.drawImage(img, 0, 0, oc.width, oc.height);
-
-        // step 2
-        octx.drawImage(oc, 0, 0, oc.width * 0.5, oc.height * 0.5);
-
-        // step 3, resize to final size
-        ctx.drawImage(oc, 0, 0, oc.width * 0.5, oc.height * 0.5,
-        0, 0, canvas.width, canvas.height);
-
-        // aggiungo la immagine dal canvas ridimensionata
-        $("#imageFromCanvas").append(`<img src="${canvas.toDataURL()}" alt="Babbo con Isabella"/>`)
-        $("#imageFromCanvas").append(`<img src="${canvas.toDataURL()}" width="125px" alt="Babbo con Isabella"/>`)
-
-        }
-        img.src = "/uploads/Nu_Red_3.jpg";
-
-</script>
-
 
     <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
 
@@ -626,7 +555,9 @@ function exitFromEditing(saveOnExit)
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" crossorigin="anonymous">
 <link rel="stylesheet" href="{{url_for('.static', filename='css/home.css')}}">
 <link href="https://unpkg.com/leaflet@1.0.1/dist/leaflet.css" rel="stylesheet"/>
-<link rel="stylesheet" href="{{url_for('.static', filename='js/TinySlideshow-master/style.css')}}">
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@splidejs/splide@latest/dist/css/splide.min.css">
 <style>
  /* Set the size of the div element that contains the map */
       .osm-map {
@@ -639,6 +570,11 @@ function exitFromEditing(saveOnExit)
 
        }
 
+       .splide__slide img {
+                width : 100%;
+                height: auto;
+              }
+//https://splidejs.com/apis/
 </style>
 
 {% endblock %}

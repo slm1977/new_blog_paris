@@ -10,6 +10,7 @@
 			"**/.project": true,
 			"**/.settings": true,
 			"**/.factorypath": true
-		}
+		},
+		"inline-bookmarks.view.showVisibleFilesOnly": false
 	}
 }
