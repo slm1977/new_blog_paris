@@ -1,14 +1,31 @@
-{% extends "bootstrap/base.html" %}
-
-{% block styles %}
-{{super()}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
 <style>
 	@import url(https://fonts.googleapis.com/css?family=Indie+Flower);
+
+html { overflow: hidden; }
+
 body {
   margin: 0;
   padding: 0;
   background: lightgoldenrodyellow;
 }
+
+.unselectable {
+        -webkit-touch-callout: none; /* iOS Safari */
+        -webkit-user-select: none; /* Safari */
+         -khtml-user-select: none; /* Konqueror HTML */
+           -moz-user-select: none; /* Old versions of Firefox */
+            -ms-user-select: none; /* Internet Explorer/Edge */
+                user-select: none; /* Non-prefixed version, currently
+                                      supported by Chrome, Opera and Firefox */
+    }
+
 .paper {
   position: absolute;
   height: 550px;
@@ -22,12 +39,11 @@ body {
 .paper::before {
   content: '';
   position: absolute;
-  left: 45px;
+  right: 45px;
   height: 100%;
   width: 2px;
   background: rgba(255,0,0,0.4);
 }
-
 .lines {
   margin-top: 40px;
   height: calc(100% - 40px);
@@ -35,20 +51,11 @@ body {
   background-image: repeating-linear-gradient(white 0px, white 24px, steelblue 25px);
 }
 
-.mappa {
-      position: absolute;
-      top: 30px;
-      right: 5px;
-      height: 250px;  /* The height  */
-      width: 390px;  /* The width  */
-      border: #000000;
-    }
-
 
 
 .titolo {
- text-align: right;
- margin-right: 10px;
+ text-align: left;
+ margin-left: 15px;
  font-weight: bold;
  font-size: 150%;
  font-family: 'Indie Flower';
@@ -56,27 +63,28 @@ body {
 
 .indirizzo {
  position: relative;
- margin-top:18px;
- text-align: right;
+ margin-top:-2px;
+ text-align: left;
  font-weight: normal;
- font-size: 80%;
- font-family: 'Georgia';
+ font-size: 70%;
+ font-family: 'Times New Roman';
+
 }
 
 .orari {
   position: relative;
   margin-top:10px
- text-align: right;
+ text-align: left;
  font-weight: normal;
  font-size: 70%;
- font-family: 'Georgia';
+ font-family: 'Times New Roman';
 }
 
 
 .caratteristiche_title {
   position: absolute;
   top: 148px;
-  left: 55px;
+  left: 15px;
   bottom: 10px;
   right: 10px;
   line-height: 25px;
@@ -84,24 +92,28 @@ body {
   font-family: 'Indie Flower';
   overflow: hidden;
   outline: none;
+  font-size: 120%;
 }
 
 .text_caratteristiche {
   position: absolute;
   top: 173px;
   bottom: 10px;
-  left: 55px;
+  left: 15px;
   right: 10px;
   line-height: 25px;
-  font-family: 'Indie Flower';
+  //font-family: 'Indie Flower';
+  font-family: 'Times New Roman';
   overflow: hidden;
   outline: none;
+  font-size: 120%;
 }
 
 .recensioni_title {
   position: absolute;
   top: 223px;
-  left: 55px;
+  left: 15px;
+  right: 10px;
   bottom: 10px;
   right: 10px;
   line-height: 25px;
@@ -109,54 +121,29 @@ body {
   font-family: 'Indie Flower';
   overflow: hidden;
   outline: none;
+  font-size: 120%;
 }
 
-.text_recensioni {
-  position: absolute;
-  top: 273px;
-  bottom: 10px;
-  left: 55px;
-  right: 10px;
-  line-height: 25px;
-  font-family: 'Indie Flower';
-  overflow: hidden;
-  outline: none;
-}
 
-.text_content {
+.text_content2 {
   position: absolute;
   top: 248px;
   bottom: 10px;
-  left: 55px;
-  right: 10px;
+  left: 15px;
+  right: 55px;
   line-height: 25px;
-  font-family: 'Indie Flower';
+  //font-family: 'Indie Flower';
+  font-family: 'Times New Roman';
   overflow: hidden;
   outline: none;
-}
-
-.images {
-  position: absolute;
-  top: 148px;
-  bottom: 10px;
-  left: 55px;
-  right: 10px;
-  line-height: 25px;
-  font-family: 'Indie Flower';
-  overflow: hidden;
-  outline: none;
+  font-size: 120%;
 }
 
 
-.images_border {
-  border: 2px solid #FAA;
-  border-radius: 5px;
-  padding: 0px;
-}
 
 .holes {
   position: absolute;
-  left: 10px;
+  right: 10px;
   height: 25px;
   width: 25px;
   background: lightgoldenrodyellow;
@@ -200,10 +187,9 @@ body {
 }
 
 
-
-.rings {
+ .rings {
   position: absolute;
-  left: -30px;
+  right:  -30px;
   height: 50px;
   width: 50px;
   height: 25px;
@@ -213,35 +199,53 @@ body {
   transform: rotate(180deg);
 
 }
-</style>
-{% endblock %}
 
-{% block content %}
+
+</style>
 <div class="paper">
 
 
   <div class="lines">
-     <div class="titolo" spellcheck="false" >
-      
-      <div class="mappa">
-        {% block mappa %}
-        {% endblock %}
-      </div>
 
-       <div class="indirizzo" spellcheck="false" >
+     <div class="titolo unselectable" spellcheck="false" >
+      {% block intestazione %}
+       Intestazione di prova
+        {% endblock %}
+
+       <div class="indirizzo unselectable" spellcheck="false" >
           {% block indirizzo %}
             Indirizzo di prova
         {% endblock %}
     </div>
 
-    <div class="orari" contenteditable spellcheck="false">
+    <div class="orari"  spellcheck="false">
       {% block orari %}
       {% endblock %}
     </div>
+
+
     </div>
 
-     {% block images %}
+
+    <div class="caratteristiche_title"  spellcheck="false">
+      Di che si tratta?
+    </div>
+
+     <div class="text_caratteristiche"  spellcheck="false">
+      {% block caratteristiche %}
       {% endblock %}
+    </div>
+
+     <div class="recensioni_title"  spellcheck="false">
+      Recensioni e suggerimenti
+    </div>
+
+
+    <div class="text_content2"  spellcheck="false">
+      {% block content %}
+      {% endblock %}
+    </div>
+
 
   </div>
   <div class="holes hole-top"></div>
@@ -258,5 +262,5 @@ body {
   <div class="rings rings2-bottom"></div>
 
 </div>
-
-{% endblock %}
+</body>
+</html>

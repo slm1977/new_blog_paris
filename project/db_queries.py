@@ -70,7 +70,7 @@ def add_zone_to_db(zone_title, index=1):
     return result
 
 def get_restaurants_by_zone(zone_id):
-    return Restaurant.query.filter_by(deleted=False, zone_id=zone_id).order_by(Restaurant.name).all()
+    return Restaurant.query.filter_by(deleted=False, zone_id=zone_id).order_by(Restaurant.id).all()
     
 def add_restaurant_to_db(name, address, topic, description, zone_id, orari, index=1):
     try:
