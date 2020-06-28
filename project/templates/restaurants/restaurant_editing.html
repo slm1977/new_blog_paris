@@ -84,11 +84,13 @@
 <div id="image-slider" class="splide js-thumbnails">
 	<div class="splide__track">
 		<ul class="splide__list">
-      {% set imagePaths = [] if restaurant==None  else  restaurant.images.split(',') %}
+      {% set imagePaths = [] if (restaurant==None or restaurant.images==None)  else  restaurant.images.split(',') %}
       {% for path in imagePaths %}
-        <li class="splide__slide">
-          <img src="{{ path }}">
-        </li>
+        {% if path!="" %}
+          <li class="splide__slide">
+            <img src="{{ path }}">
+          </li>
+        {% endif %}
       {% endfor %} 
     </ul>
   </div>
@@ -96,7 +98,7 @@
 </div>
 <br>
 <div>
-  <button class="btn btn-primary" onclick="document.getElementById('getFile').click()">Carica immagine</button>
+  <input type="button" class="btn btn-primary" value="Carica immagine" onclick="document.getElementById('getFile').click()"/>
   <input type=file name=file id="getFile" style="display:none">
   <input type="button" class="btn btn-primary alert-danger" id="butRemoveImage" value="Elimina immagine"/>
 
@@ -268,6 +270,7 @@
         var file = fileDialog[0].files[0];
         var imageData = new FormData();
         imageData.append('file', file);
+        imageData.append('prefix', `rest_${restaurant_id}__`);
 
         $.ajax({
           url: uploadUrl,
@@ -290,8 +293,8 @@
     var modified = false;
     var restaurant_id = {{restaurant.id if restaurant != None else -1 }}
 
-    var latitude = {{restaurant.latitude if restaurant != None else "48.8925" }}
-    var longitude =  {{restaurant.longitude if restaurant != None else "2.3444" }}
+    var latitude = {{restaurant.latitude if (restaurant != None and restaurant.latitude!=None) else "48.8925" }}
+    var longitude =  {{restaurant.longitude if (restaurant != None and restaurant.longitude!=None) else "2.3444" }}
     var map = null;
     var marker = null;
     var GEO_KEY="";

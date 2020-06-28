@@ -91,3 +91,8 @@ def save_restaurant():
                     "message" : "Si è verificato un problema nel salvataggio del ristorante %s" % rest_id ,
                     "restaurant_id" : rest_id}
     return  jsonify(result)
+
+
+def deleteUnusedUploadedFiles():
+    pass
+    

@@ -132,3 +132,8 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+
+# uploaded images folder
+uploaded_images/
+

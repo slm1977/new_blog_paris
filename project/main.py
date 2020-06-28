@@ -153,10 +153,13 @@ def upload_file():
             return redirect(request.url)
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
+            prefix = request.form.get('prefix',"")
+            print("Prefisso filename:%s" % prefix)
+            db_filename = "%s%s" % (prefix,filename)
+            file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], db_filename))
             print("IMMAGINE SALVATA CON SUCCESSO")
-            file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
             return url_for('main.uploaded_file',
-                                    filename=filename)
+                                    filename=db_filename)
     return '''
     <!doctype html>
     <title>Upload new File</title>
