@@ -1,0 +1,22 @@
+{% extends "new_base_restaurants_left.html" %}
+
+{% block intestazione %}
+   {{ rist["name"] }}
+{% endblock %}
+
+{% block indirizzo %}
+   {{ rist["address"] }}
+{% endblock %}
+
+{% block orari %}
+ {{ rist["orari"] }}
+{% endblock %}
+
+{% block caratteristiche %}
+ {{ rist["topic"] }}
+{% endblock %}
+
+
+{% block content %}
+{{ rist["description"] }}
+{% endblock %}

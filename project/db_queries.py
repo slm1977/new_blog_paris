@@ -20,6 +20,11 @@ def get_zones():
     zones = Zone.query.filter_by(deleted=False).order_by(Zone.index).all()
     return zones
 
+def get_zone(zone_id):
+    zone = Zone.query.filter_by(deleted=False, id=zone_id).first()
+    print("zona da db:%s" % zone)
+    return zone
+
 def update_zones(zones, zones_id):
     LOG.info("ZONE DA AGGIORNARE:%s" % zones_id)
     index = 1
@@ -64,7 +69,9 @@ def add_zone_to_db(zone_title, index=1):
 
     return result
 
-
+def get_restaurants_by_zone(zone_id):
+    return Restaurant.query.filter_by(deleted=False, zone_id=zone_id).order_by(Restaurant.name).all()
+    
 def add_restaurant_to_db(name, address, topic, description, zone_id, orari, index=1):
     try:
         new_restaurant = Restaurant(name=name, address=address,

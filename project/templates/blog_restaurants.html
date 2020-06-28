@@ -5,17 +5,17 @@
 <div style="background-color:transparent;overflow-x: hidden;" class="scrollablePost"">
 
 <table style="width: 600px;margin-right: 100px;margin-left: 50px; margin-bottom: 100px;">
-    {% for i in range(0,ristoranti|length,2) %}
+    {% for i in range(0,quartieri|length,2) %}
         <tr>
              <td style="padding:20px">
-                <a href="{{url_for('main.caricaLibroRistorante', quartiere='%s' % ristoranti[i])}}">
-                    <img src="{{url_for('static', filename='pages/%s_pagina_0.png' % ristoranti[i])}}" height="250px"/>
+                <a href="{{url_for('main.caricaLibroRistorante', quartiere='%s' % quartieri[i])}}">
+                    <img src="{{url_for('static', filename='pages/%s_pagina_0.png' % quartieri[i])}}" height="250px"/>
                 </a>
              </td>
-            {% if ristoranti[i+1] is defined %}
+            {% if quartieri[i+1] is defined %}
                 <td style="padding:20px">
-                    <a href="{{url_for('main.caricaLibroRistorante', quartiere='%s' % ristoranti[i+1])}}">
-                        <img src="{{url_for('static', filename='pages/%s_pagina_0.png' % ristoranti[i+1])}}" height="250px"/>
+                    <a href="{{url_for('main.caricaLibroRistorante', quartiere='%s' % quartieri[i+1])}}">
+                        <img src="{{url_for('static', filename='pages/%s_pagina_0.png' % quartieri[i+1])}}" height="250px"/>
                     </a>
                 </td>
             {% endif %}

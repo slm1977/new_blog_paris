@@ -1,7 +1,7 @@
-
-from flask import Flask, flash, send_from_directory, current_app,  Blueprint, render_template, request, redirect, url_for, send_from_directory, jsonify
+from flask import Flask, flash, abort, send_from_directory, current_app,  Blueprint, render_template, request, redirect, url_for, send_from_directory, jsonify
 from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
+from project.db_queries import get_zone, get_restaurants_by_zone
 import os
 
 
@@ -23,43 +23,6 @@ main = Blueprint('main', __name__,template_folder='templates',static_folder='sta
 #https://developers.facebook.com/docs/messenger-platform/discovery/customer-chat-plugin#steps
 
 
-"""
-@main.route("/itinerari/<int:indice>/")
-def caricaItinerario(indice):
-    return render_template("blog_itinerario.html", itinerario=itinerari[indice])
-
-
-
-@main.route("/itinerari/")
-def mostraItinerari():
-    return render_template("blog_itinerari.html", itinerari=itinerari)
-"""
-
-@main.route("/insert_rest/")
-@login_required
-def insertRestaurants():
-    quartieri = ristoranti.keys()
-    q_id= 14 # id del quartiere latino
-    for q in quartieri:
-        for r in ristoranti[q]:
-            quartiere = r["quartiere"]
-            name = r["titolo"]
-            address = r["indirizzo"]
-            topic = r["caratteristiche"]
-            description = r["descrizione"]
-            zone_id = q_id
-            orari = r["orari"]
-            index = 1
-            print("%s: id:%s Rist:%s" % (quartiere, q_id, name))
-            add_restaurant_to_db(name=name, address=address, topic=topic,
-                                 description=description, zone_id=zone_id,
-                                 index=index, orari=orari)
-        q_id +=1
-
-    return "Ok"
-
-
-
 @main.route("/")
 def home():
     menu= get_pages()
@@ -67,21 +30,18 @@ def home():
     return redirect("/load_page/%s" % page_id)
 
 
-
-
+@main.route("/ristoranti/")
+def mostra_ristoranti():
+    # (900,550) dimensione del book al 100%
+    ord_quartieri = list(ristoranti.keys())
+    ord_quartieri.sort()
+    print("QUARTIERI:%s" % ord_quartieri)
+    return render_template("blog_restaurants.html", quartieri= ord_quartieri, menu=get_pages(), page_id=-2)
+    
 
 @main.route("/inner_book/<quartiere>/")
 def caricaLibroRistorante(quartiere):
     return render_template("blog_restaurant.html", quartiere=quartiere,menu=get_pages(), page_id=-2)
-
-@main.route("/ristoranti/")
-def mostra_ristoranti():
-    # (900,550) dimensione del book al 100%
-    ord_ristoranti = list(ristoranti.keys())
-    ord_ristoranti.sort()
-    return render_template("blog_restaurants.html", ristoranti= ord_ristoranti, menu=get_pages(), page_id=-2)
-    #return book("marais")
-
 
 
 @main.route("/book/<quartiere>/")
@@ -90,6 +50,8 @@ def book(quartiere):
     myvideo = url_for("static", filename="fotoblog/ristoranti/levieuxbelleville.mp4")
     return render_template("book2.html", ristoranti=ristoranti[quartiere], countRest=len(ristoranti[quartiere]),
                            quartiere=quartiere, myvideo=myvideo)
+
+
 
 
 @main.route("/ristoranti/<quartiere>/<int:n>/")
@@ -108,21 +70,26 @@ def restaurants(quartiere,n):
         return render_template('rest_page_right_images.html', rist=r[int((n-2) / 2)])
 
 
+@main.route("/ristoranti2/<int:zone_id>/<int:n>/")
+def restaurants2(zone_id,n):
+    quartiere = get_zone(zone_id)
+    if quartiere==None:
+        abort(404)
+    print("ZONA: %s" % quartiere.name)
+    r = get_restaurants_by_zone(zone_id)
+    print("Ristoranti del %s\n\n" % r)
+    if (n==0):
+        return render_template('new_base_restaurants_front_title2.html', quartiere=quartiere.name)
 
-@main.route("/collage/")
-def collage():
-    return redirect(url_for("static", filename="collage/index.html"))
+    #elif (n==len(r)-1 and n%2==1):
+    #    return render_template('rest_page_back.html', rist=r[n-1])
+
+    elif (n%2==1):
+        return render_template('new_rest_page_left.html', rist=r[int((n - 1) / 2)])
+    else:
+        return render_template('new_rest_page_right_images.html', rist=r[int((n-2) / 2)])
 
 
-
-@main.route("/video/<quartiere>/<int:n>/")
-def video(quartiere,n):
-    r = ristoranti[quartiere]
-    myvideo = url_for("static", filename="fotoblog/ristoranti/levieuxbelleville.mp4")
-    return render_template('rest_page_right.html', rist=r[n], myvideo=myvideo)
-
-
- 
 #
 # FILE UPLOAD CODE
 #
@@ -174,4 +141,57 @@ def upload_file():
 def uploaded_file(filename):
     return send_from_directory(current_app.config['UPLOAD_FOLDER'],
                                filename)
+
+
+
+"""
+@main.route("/itinerari/<int:indice>/")
+def caricaItinerario(indice):
+    return render_template("blog_itinerario.html", itinerario=itinerari[indice])
+
+
+
+@main.route("/itinerari/")
+def mostraItinerari():
+    return render_template("blog_itinerari.html", itinerari=itinerari)
+
+
+@main.route("/insert_rest/")
+@login_required
+def insertRestaurants():
+    quartieri = ristoranti.keys()
+    q_id= 14 # id del quartiere latino
+    for q in quartieri:
+        for r in ristoranti[q]:
+            quartiere = r["quartiere"]
+            name = r["titolo"]
+            address = r["indirizzo"]
+            topic = r["caratteristiche"]
+            description = r["descrizione"]
+            zone_id = q_id
+            orari = r["orari"]
+            index = 1
+            print("%s: id:%s Rist:%s" % (quartiere, q_id, name))
+            add_restaurant_to_db(name=name, address=address, topic=topic,
+                                 description=description, zone_id=zone_id,
+                                 index=index, orari=orari)
+        q_id +=1
+
+    return "Ok"
+"""
+
+"""
+@main.route("/collage/")
+def collage():
+    return redirect(url_for("static", filename="collage/index.html"))
+
+
+
+@main.route("/video/<quartiere>/<int:n>/")
+def video(quartiere,n):
+    r = ristoranti[quartiere]
+    myvideo = url_for("static", filename="fotoblog/ristoranti/levieuxbelleville.mp4")
+    return render_template('rest_page_right.html', rist=r[n], myvideo=myvideo)
+
+"""
 
