@@ -3,7 +3,7 @@
 from flask import Flask
 from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
-from flask_bootstrap import Bootstrap
+from flask_bootstrap import Bootstrap, WebCDN,StaticCDN
 
 from werkzeug.utils import secure_filename, find_modules, import_string
 
@@ -40,6 +40,13 @@ def create_app():
     print("Richiamata create_app")
     app = Flask(__name__)
     Bootstrap(app)
+    """
+    app.extensions['bootstrap']['cdns']['jquery'] = WebCDN(
+    '//ajax.googleapis.com/ajax/libs/jquery/3.5.1/')
+    """
+    app.extensions['bootstrap']['cdns']['jquery'] = StaticCDN()
+
+    
     configure_logging()
     # https://flask.palletsprojects.com/en/1.1.x/patterns/fileuploads/
     UPLOAD_FOLDER =  os.path.join(app.root_path, 'static/uploaded_images')

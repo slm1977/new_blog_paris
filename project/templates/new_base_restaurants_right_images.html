@@ -37,9 +37,18 @@ body {
 
 .mappa {
       position: absolute;
-      top: 30px;
+      top: 60px;
       right: 5px;
       height: 250px;  /* The height  */
+      width: 390px;  /* The width  */
+      border: #000000;
+    }
+
+    .tabcontent {
+      position: absolute;
+      top: 30px;
+      right: 5px;
+      height: 500px;  /* The height  */
       width: 390px;  /* The width  */
       border: #000000;
     }
@@ -65,79 +74,16 @@ body {
 
 .orari {
   position: relative;
-  margin-top:10px
+  margin-top:10px;
  text-align: right;
  font-weight: normal;
  font-size: 70%;
  font-family: 'Georgia';
 }
 
-
-.caratteristiche_title {
-  position: absolute;
-  top: 148px;
-  left: 55px;
-  bottom: 10px;
-  right: 10px;
-  line-height: 25px;
-  font-weight: bold;
-  font-family: 'Indie Flower';
-  overflow: hidden;
-  outline: none;
-}
-
-.text_caratteristiche {
-  position: absolute;
-  top: 173px;
-  bottom: 10px;
-  left: 55px;
-  right: 10px;
-  line-height: 25px;
-  font-family: 'Indie Flower';
-  overflow: hidden;
-  outline: none;
-}
-
-.recensioni_title {
-  position: absolute;
-  top: 223px;
-  left: 55px;
-  bottom: 10px;
-  right: 10px;
-  line-height: 25px;
-  font-weight: bold;
-  font-family: 'Indie Flower';
-  overflow: hidden;
-  outline: none;
-}
-
-.text_recensioni {
-  position: absolute;
-  top: 273px;
-  bottom: 10px;
-  left: 55px;
-  right: 10px;
-  line-height: 25px;
-  font-family: 'Indie Flower';
-  overflow: hidden;
-  outline: none;
-}
-
-.text_content {
-  position: absolute;
-  top: 248px;
-  bottom: 10px;
-  left: 55px;
-  right: 10px;
-  line-height: 25px;
-  font-family: 'Indie Flower';
-  overflow: hidden;
-  outline: none;
-}
-
 .images {
   position: absolute;
-  top: 148px;
+  top: 330px;
   bottom: 10px;
   left: 55px;
   right: 10px;
@@ -219,15 +165,14 @@ body {
 {% block content %}
 <div class="paper">
 
-
   <div class="lines">
      <div class="titolo" spellcheck="false" >
       
-      <div class="mappa">
-        {% block mappa %}
+      <div class="tabcontent">
+        {% block tabcontent %}
         {% endblock %}
       </div>
-
+      <!--
        <div class="indirizzo" spellcheck="false" >
           {% block indirizzo %}
             Indirizzo di prova
@@ -240,8 +185,11 @@ body {
     </div>
     </div>
 
+    <div class="images">
      {% block images %}
       {% endblock %}
+    </div>
+-->
 
   </div>
   <div class="holes hole-top"></div>
