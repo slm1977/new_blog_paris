@@ -1,0 +1,208 @@
+<!doctype html>
+<!--[if lt IE 7 ]> <html lang="en" class="ie6"> <![endif]-->
+<!--[if IE 7 ]>    <html lang="en" class="ie7"> <![endif]-->
+<!--[if IE 8 ]>    <html lang="en" class="ie8"> <![endif]-->
+<!--[if IE 9 ]>    <html lang="en" class="ie9"> <![endif]-->
+
+<!-- https://stackoverflow.com/questions/16321456/absolute-position-after-zooming/16396598 -->
+
+<!--[if !IE]><!--> <html lang="en"> <!--<![endif]-->
+<head>
+<meta name="viewport" content="width = 1050, user-scalable = no" />
+
+<script type="text/javascript" src="{{ url_for('static', filename='extras/jquery.min.1.7.js') }}">
+</script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='extras/modernizr.2.5.3.min.js')}}">
+</script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='lib/hash.js')}}">
+</script>
+
+
+</head>
+<body>
+
+<style>
+
+body{
+    background-color:transparent;
+}
+
+.parent {
+  position: relative;
+
+}
+.child {
+  position: absolute;
+  left: 200px; /* This is 200 pixels from the parents left side */
+  top: 200px; /* This is 200 pixels from the parents top side */
+}
+</style>
+
+<div class="flipbook-viewport">
+
+
+	<div class="container">
+		<div class="flipbook">
+			{%for i in range(2*countRest+1) %}
+				<div class="parent" id="{{quartiere}}_{{i}}">
+					
+			<iframe id="page_{{i}}_content" 
+			class="contentFrame" frameBorder="0"
+					src='{{ url_for("main.restaurants2", zone_id=quartiere.id, n=i) }}'> 
+			</iframe>
+	
+					</div>
+				 
+				 
+			{% endfor %}
+
+			<!--
+			{%for i in range(countRest) %}
+				<div>
+					<iframe id="pageContent" width="100%" height="100%" src='{{ url_for("main.restaurants", quartiere="marais", n=i) }}'> </iframe>
+				</div>
+			{% endfor %}
+			-->
+
+		</div>
+	</div>
+
+</div>
+
+
+
+<script type="text/javascript">
+
+function loadApp() {
+	console.log("richiamata loadApp...")
+
+	var flipbook = $('.flipbook');
+
+ 	// Check if the CSS was already loaded
+
+	if (flipbook.width()==0 || flipbook.height()==0) {
+		setTimeout(loadApp, 10);
+		return;
+	}
+
+	// Create the flipbook
+
+	$('.flipbook').turn({
+			// Width
+
+			width:720,
+
+			// Height
+
+			height:440,
+
+			// Elevation
+
+			elevation: 50,
+
+			// The number of pages
+
+			pages: {{ countRest }},
+
+			// Enable gradients
+
+			gradients: true,
+
+			// Auto center this flipbook
+
+			autoCenter: true,
+
+	});
+
+
+
+	// Using arrow keys to turn the page
+
+	$(document).keydown(function(e){
+        console.log("Premuto tasto");
+		var previous = 37, next = 39, esc = 27;
+
+		switch (e.keyCode) {
+			case previous:
+
+				// left arrow
+				$('.flipbook').turn('previous');
+				e.preventDefault();
+
+			break;
+			case next:
+
+				//right arrow
+				$('.flipbook').turn('next');
+				e.preventDefault();
+
+			break;
+			case esc:
+
+				$('.flipbook-viewport').zoom('zoomOut');
+				e.preventDefault();
+
+			break;
+		}
+	});
+
+}
+
+
+function addPage(page, book) {
+		console.log("provo ad aggiungere un a pagina");
+		var id, pages = book.turn('pages');
+		console.log("Numero di pagine" + {{ countRest }});
+		// Create a new element for this page
+		var element = $('<div />', {});
+
+		// Add the page to the flipbook
+		if (book.turn('addPage', element, page)) {
+
+			// Add the initial HTML
+			// It will contain a loader indicator and a gradient
+			element.html('<div class="gradient"></div><div class="loader"></div>');
+
+			// Load the page
+			loadPage(page, element);
+			}
+
+		}
+
+function loadPage(page, pageElement) {
+    var content=$('<iframe id="pageContent" width="100%" height="100%" src="http://192.168.0.118:5000/marais/0/"> </iframe>');
+    content.appendTo(pageElement);
+	}
+
+
+
+
+// Load the HTML4 version if there's not CSS transform
+
+yepnope({
+	test : Modernizr.csstransforms,
+	yep:  ["{{ url_for('static', filename='lib/turn.js') }}"],
+	nope: ["{{ url_for('static', filename='lib/turn.html4.min.js') }}"],
+	both: ["{{ url_for('static', filename='css/basic.css') }}"],
+	complete: loadApp
+});
+</script>
+
+<style>
+
+#wrap { width: 600px; height: 390px; padding: 0; overflow: hidden; }
+    .contentFrame { width: 450px; height: 550px; border: 0px solid black; }
+    .contentFrame {
+        -ms-zoom: 0.80;
+        -moz-transform: scale(0.80);
+        -moz-transform-origin: 0 0;
+        -o-transform: scale(0.80);
+        -o-transform-origin: 0 0;
+        -webkit-transform: scale(0.80);
+        -webkit-transform-origin: 0 0;
+</style>
+
+</body>
+</html>

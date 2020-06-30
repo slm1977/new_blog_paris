@@ -43,6 +43,10 @@ def mostra_ristoranti():
 def caricaLibroRistorante(quartiere):
     return render_template("blog_restaurant.html", quartiere=quartiere,menu=get_pages(), page_id=-2)
 
+@main.route("/inner_book2/<zone_id>/")
+def caricaLibroRistorante2(zone_id):
+    return render_template("new_blog_restaurant.html", zone_id=zone_id,menu=get_pages(), page_id=-2)
+
 
 @main.route("/book/<quartiere>/")
 def book(quartiere):
@@ -50,6 +54,18 @@ def book(quartiere):
     myvideo = url_for("static", filename="fotoblog/ristoranti/levieuxbelleville.mp4")
     return render_template("book2.html", ristoranti=ristoranti[quartiere], countRest=len(ristoranti[quartiere]),
                            quartiere=quartiere, myvideo=myvideo)
+
+@main.route("/book2/<int:zone_id>/")
+def book2(zone_id):
+    print("In book:%s" % zone_id)
+    quartiere = get_zone(zone_id)
+    if quartiere==None:
+        abort(404)
+    print("ZONA: %s" % quartiere.name)
+    r = get_restaurants_by_zone(zone_id)
+    return render_template("new_book2.html", ristoranti=r, countRest=len(r),
+                           quartiere=quartiere)
+
 
 
 
