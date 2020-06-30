@@ -81,6 +81,8 @@
   <label for="description" style="display:block;">Galleria delle immagini</label>
 
  <!-- Photo gallery-->
+ 
+ <div class="gallery-container" >
 <div id="image-slider" class="splide js-thumbnails">
 	<div class="splide__track">
 		<ul class="splide__list">
@@ -94,17 +96,17 @@
       {% endfor %} 
     </ul>
   </div>
-
 </div>
-<br>
+</div>
+<br><br><br><br><br>
 <div>
   <input type="button" class="btn btn-primary" value="Carica immagine" onclick="document.getElementById('getFile').click()"/>
   <input type=file name=file id="getFile" style="display:none">
   <input type="button" class="btn btn-primary alert-danger" id="butRemoveImage" value="Elimina immagine"/>
-
-
 </div>
-<br><br>
+
+
+
 </div>
 <!-- End of Photo Gallery-->
   
@@ -201,20 +203,14 @@
   $(document).ready(function(){
 
     splide = new Splide( '#image-slider', {
-      fixedWidth : 100,
-      height     : 100,
-      gap        : 10,
+      perPage: 1,
+      autoHeight: true,
+      gap        : 0,
       rewind     : true,
-      cover      : true,
+      cover      : false,
       pagination : false,
-      isNavigation: true,
-      focus      : 'center',
-      breakpoints : {
-        '600': {
-          fixedWidth: 66,
-          height    : 40,
-		}
-	}
+      isNavigation: false,
+      focus      : 'center'
       } ).mount();
 
       // On click listeners
@@ -592,10 +588,22 @@ function exitFromEditing(saveOnExit)
 
        }
 
+       .gallery-container {
+        height: 400px;  /* The height  */
+        width: 400px;  /* The width  */
+        padding: 20px;
+        margin-right: 20px;
+        margin-bottom: 20px;
+        margin-top: 20px;
+
+       }
+
        .splide__slide img {
                 width : 100%;
                 height: auto;
               }
+
+              
 //https://splidejs.com/apis/
 </style>
 
