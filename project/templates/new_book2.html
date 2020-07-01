@@ -46,26 +46,16 @@ body{
 	<div class="container">
 		<div class="flipbook">
 			{%for i in range(2*countRest+1) %}
-				<div class="parent" id="{{quartiere}}_{{i}}">
-					
-			<iframe id="page_{{i}}_content" 
-			class="contentFrame" frameBorder="0"
+				<div class="parent"  id="{{quartiere}}_{{i}}"  style="background-color: transparent;">
+					<br>
+					<iframe id="page_{{i}}_content" 
+					onload='iframeLoaded("page_{{i}}_content")'
+					class="contentFrame" frameBorder="0"
 					src='{{ url_for("main.restaurants2", zone_id=quartiere.id, n=i) }}'> 
-			</iframe>
-	
-					</div>
-				 
-				 
-			{% endfor %}
-
-			<!--
-			{%for i in range(countRest) %}
-				<div>
-					<iframe id="pageContent" width="100%" height="100%" src='{{ url_for("main.restaurants", quartiere="marais", n=i) }}'> </iframe>
+					</iframe>
 				</div>
+			
 			{% endfor %}
-			-->
-
 		</div>
 	</div>
 
@@ -74,6 +64,25 @@ body{
 
 
 <script type="text/javascript">
+
+// Shorthand for $( document ).ready()
+$(function() {
+	
+    console.log( "ready!" );
+});
+
+function iframeLoaded(frameId)
+{
+	//alert("IFRAME LOADED")
+	$(document.getElementById(frameId).contentWindow.document).keydown(
+		function(e){ 
+	    //alert('Key down:' + e.keyCode); 
+		//$("element").trigger("keydown");
+		console.log("propago keydown al parent")
+		//$(parent.document)
+		$(document).trigger(e)
+		});
+}
 
 function loadApp() {
 	console.log("richiamata loadApp...")
@@ -121,7 +130,7 @@ function loadApp() {
 	// Using arrow keys to turn the page
 
 	$(document).keydown(function(e){
-        console.log("Premuto tasto");
+        console.log(`Premuto tasto su FLIPBOOK con codice: ${e.keyCode} `);
 		var previous = 37, next = 39, esc = 27;
 
 		switch (e.keyCode) {
@@ -192,8 +201,7 @@ yepnope({
 
 <style>
 
-#wrap { width: 600px; height: 390px; padding: 0; overflow: hidden; }
-    .contentFrame { width: 450px; height: 550px; border: 0px solid black; }
+    .contentFrame {  clear: both;  width: 450px; height: 550px; border: 0px solid rgb(70, 185, 99); }
     .contentFrame {
         -ms-zoom: 0.80;
         -moz-transform: scale(0.80);
