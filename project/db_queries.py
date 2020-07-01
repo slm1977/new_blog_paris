@@ -16,8 +16,8 @@ def get_pages():
     pages = Page.query.order_by(Page.index).all()
     return pages
 
-def get_zones():
-    zones = Zone.query.filter_by(deleted=False).order_by(Zone.index).all()
+def get_zones(order=Zone.index):
+    zones = Zone.query.filter_by(deleted=False).order_by(order).all()
     return zones
 
 def get_zone(zone_id):

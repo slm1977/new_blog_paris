@@ -1,7 +1,7 @@
 from flask import Flask, flash, abort, send_from_directory, current_app,  Blueprint, render_template, request, redirect, url_for, send_from_directory, jsonify
 from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
-from project.db_queries import get_zone, get_restaurants_by_zone
+from project.db_queries import get_zone, get_zones, get_restaurants_by_zone
 import os
 
 
@@ -37,6 +37,13 @@ def mostra_ristoranti():
     ord_quartieri.sort()
     print("QUARTIERI:%s" % ord_quartieri)
     return render_template("blog_restaurants.html", quartieri= ord_quartieri, menu=get_pages(), page_id=-2)
+
+@main.route("/ristoranti2/")
+def mostra_ristoranti2():
+    # (900,550) dimensione del book al 100%
+    ord_quartieri = get_zones()
+    print("QUARTIERI:%s" % ord_quartieri)
+    return render_template("new_blog_restaurants.html", quartieri= ord_quartieri, menu=get_pages(), page_id=-2)
     
 
 @main.route("/inner_book/<quartiere>/")
