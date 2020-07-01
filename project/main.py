@@ -29,7 +29,7 @@ def home():
     page_id = menu[0].id
     return redirect("/load_page/%s" % page_id)
 
-
+"""
 @main.route("/ristoranti/")
 def mostra_ristoranti():
     # (900,550) dimensione del book al 100%
@@ -37,9 +37,10 @@ def mostra_ristoranti():
     ord_quartieri.sort()
     print("QUARTIERI:%s" % ord_quartieri)
     return render_template("blog_restaurants.html", quartieri= ord_quartieri, menu=get_pages(), page_id=-2)
+"""
 
-@main.route("/ristoranti2/")
-def mostra_ristoranti2():
+@main.route("/ristoranti/")
+def mostra_ristoranti():
     # (900,550) dimensione del book al 100%
     ord_quartieri = get_zones()
     print("QUARTIERI:%s" % ord_quartieri)
