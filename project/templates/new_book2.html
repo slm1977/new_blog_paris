@@ -73,7 +73,6 @@ $(function() {
 
 function iframeLoaded(frameId)
 {
-	//alert("IFRAME LOADED")
 	$(document.getElementById(frameId).contentWindow.document).keydown(
 		function(e){ 
 	    //alert('Key down:' + e.keyCode); 
@@ -98,6 +97,22 @@ function loadApp() {
 
 	// Create the flipbook
 
+	$(".flipbook").bind("end", function(event, pageObject, turned){
+			
+			//alert(`turn.end zona:{{quartiere.id}} pagina: ${$(".flipbook").turn("page")}`);
+			$.ajax({
+				url: "/set_active_restaurant/",
+				type: 'POST',
+				data: { 'zone_id': `{{ quartiere.id }}`,
+						'page_index' : $(".flipbook").turn("page")
+                        }
+			}).done(function(done) {
+				var ele = editor.document.createElement('img');
+				ele.setAttribute('src', done);
+				editor.insertElement(ele);
+			});
+			});
+
 	$('.flipbook').turn({
 			// Width
 
@@ -120,9 +135,8 @@ function loadApp() {
 			gradients: true,
 
 			// Auto center this flipbook
-
-			autoCenter: true,
-
+			autoCenter:true
+ 
 	});
 
 
@@ -157,6 +171,26 @@ function loadApp() {
 		}
 	});
 
+   let activePageIndexJson = {{ session["active_page_index"]|tojson }};
+	if (activePageIndexJson!=null)
+	{
+		let active_page_index = parseInt(activePageIndexJson);
+			if (active_page_index>0)
+			{
+			// Turn to the page 10
+			$(".flipbook").turn("page", active_page_index);
+				//(`ACTIVE PAGE INDEX:${active_page_index}`);
+			}
+	
+	}
+	
+
+	/*
+	{% if session["active_page_index"] %}
+			// Turn to the page 10
+				$("#flipbook").turn("page", {{ session["active_page_index"] }});
+	{% endif %}
+     */
 }
 
 

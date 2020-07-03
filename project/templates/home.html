@@ -71,6 +71,14 @@
                 <ul class="nav navbar-nav">
                       {% if not current_user.is_authenticated %}
                             <li><a class="nav-item nav-link" href="{{url_for('auth.login')}}">Area riservata</a></li>
+                    
+                    {% elif page_id==-2 %}
+                    <li><a href="{{url_for('pages.create_new_page')}}">Nuovo ristorante</a></li>
+                    <li><a href="{{url_for('restaurants.edit_zones')}}">Modifica quartieri</a></li>
+                    <li><a href="{{url_for('auth.logout')}}">Esci dall'area riservata</a></li>
+                    {% elif page_id==-3 %}
+                    <li><a href="{{url_for('main.edit_active_restaurant')}}">Modifica ristorante</a></li>
+                    <li><a href="{{url_for('auth.logout')}}">Esci dall'area riservata</a></li>
                     {% else %}
                     <li><a href="{{url_for('pages.create_new_page')}}">Nuova pagina</a></li>
                     <li><a href="{{url_for('pages.page_edit',page_id=page_id)}}">Modifica pagina</a></li>

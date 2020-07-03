@@ -1,4 +1,4 @@
-from flask import Flask, flash, abort, send_from_directory, current_app,  Blueprint, render_template, request, redirect, url_for, send_from_directory, jsonify
+from flask import Flask, flash, session, abort, send_from_directory, current_app,  Blueprint, render_template, request, redirect, url_for, send_from_directory, jsonify
 from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
 from project.db_queries import get_zone, get_zones, get_restaurants_by_zone
@@ -13,6 +13,9 @@ from .db_queries import get_pages, add_zone_to_db, add_restaurant_to_db
 #from .models import Restaurant,Zone
 
 main = Blueprint('main', __name__,template_folder='templates',static_folder='static')
+
+# sessions in FLASK
+#https://pythonbasics.org/flask-sessions/
 
 #https://stackoverflow.com/questions/10434599/get-the-data-received-in-a-flask-request
 #https://stackoverflow.com/questions/54733662/how-to-send-html-data-to-flask-without-form
@@ -41,7 +44,8 @@ def mostra_ristoranti():
 
 @main.route("/ristoranti/")
 def mostra_ristoranti():
-    # (900,550) dimensione del book al 100%
+    # rimuovo le variabili di sessione relative al ristorante
+    unset_active_restaurant()
     ord_quartieri = get_zones()
     print("QUARTIERI:%s" % ord_quartieri)
     return render_template("new_blog_restaurants.html", quartieri= ord_quartieri, menu=get_pages(), page_id=-2)
@@ -53,7 +57,7 @@ def caricaLibroRistorante(quartiere):
 
 @main.route("/inner_book2/<zone_id>/")
 def caricaLibroRistorante2(zone_id):
-    return render_template("new_blog_restaurant.html", zone_id=zone_id,menu=get_pages(), page_id=-2)
+    return render_template("new_blog_restaurant.html", zone_id=zone_id,menu=get_pages(), page_id=-3)
 
 
 @main.route("/book/<quartiere>/")
@@ -112,6 +116,41 @@ def restaurants2(zone_id,n):
         return render_template('new_rest_page_left.html', rist=r[int((n - 1) / 2)])
     else:
         return render_template('new_rest_page_right_images.html', rist=r[int((n-2) / 2)])
+
+
+@main.route('/edit_active_restaurant/', methods=['GET'])
+@login_required
+def edit_active_restaurant():
+    restaurant_id = session['active_restaurant_id'] 
+    zone_id = session['active_zone_id'] 
+    return redirect("/restaurant/edit/%s/" % restaurant_id)
+
+@main.route('/set_active_restaurant/', methods=['POST'])
+@login_required
+def set_active_restaurant():
+    zone_id = request.form.get('zone_id', None)
+    page_index = request.form.get('page_index', None)
+    r = get_restaurants_by_zone(zone_id)
+    restaurant_id = r[int(page_index)//2-1].id
+    session['active_restaurant_id'] = restaurant_id
+    session['active_zone_id'] = zone_id
+    session['active_page_index'] = page_index
+    print("salvata variabile di sessione zona:%s ristorante:%s" % (session['active_zone_id'],
+                                                                   session['active_restaurant_id']))
+    return jsonify({"success" : True})
+
+@main.route('/unset_active_restaurant/', methods=['POST'])
+@login_required
+def unset_active_restaurant():
+    session['active_restaurant_id'] = 0
+    session['active_zone_id'] = 0
+    session['active_page_index'] = 0
+    """
+    session.pop('active_restaurant_id', None)
+    session.pop('active_zone_id', None)
+    session.pop('active_page_index', None)
+    """
+    return jsonify({"success" : True})
 
 
 #
