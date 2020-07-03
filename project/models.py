@@ -24,7 +24,8 @@ class Page(UserMixin, db.Model):
     index = db.Column(db.Integer)
     visible = db.Column(db.Boolean, server_default=expression.false(), nullable=False)
     type = db.Column(db.Integer)
-
+    deleted = db.Column(db.Boolean, server_default=expression.false(), nullable=False)
+    
     def __repr__(self): 
         return "<Page: %s index:%s menu_title:%s filepath:%s>" % (self.id, self.index, self.menu_title, self.path)
 

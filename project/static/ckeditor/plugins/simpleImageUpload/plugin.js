@@ -17,7 +17,15 @@ CKEDITOR.plugins.add( 'simpleImageUpload', {
 			}).done(function(done) {
 				var ele = editor.document.createElement('img');
 				ele.setAttribute('src', done);
-				editor.insertElement(ele);
+                editor.insertElement(ele);
+                // prova a fare un refresh
+                //  https://stackoverflow.com/questions/5663859/how-to-make-full-ckeditor-re-initialization
+                console.log("Immagine caricata da plugin!!");
+                // bug fixing: forzo per un attimo la visualizzazione
+                // in modalita' sorgente per consentire il caricamento corretto
+                // della immagine da parte del plugin image2
+                editor.setMode('source');
+                editor.setMode('wysiwyg');
 			});
 
         })

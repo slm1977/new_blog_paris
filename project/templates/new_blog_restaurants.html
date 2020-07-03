@@ -39,8 +39,8 @@
 
 function createLink(frameId, targetUrl)
 {   
-    $(`#${frameId}`).contents().find("textarea").css({cursor:"pointer"});
-    $(`#${frameId}`).contents().find("img").css({cursor:"pointer"});
+    //$(`#${frameId}`).contents().find("textarea").css({cursor:"pointer"});
+    $(`#${frameId}`).contents().find("div").css({cursor:"pointer"});
     console.log(`Frame ${frameId} loaded`);
     document.getElementById(frameId).contentDocument.addEventListener("click",
     function(event){

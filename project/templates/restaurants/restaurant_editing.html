@@ -336,11 +336,8 @@ function confirmDeleteRestaurant()
 
 function deleteRestaurant()
 {
-   let restaurant_id = {{ restaurant_id}}
-   //if (restaurant_id<0)
-   //window.location.href= "/"
-   //else
-   //window.location.href= "/delete/" + page_id;
+   let restaurant_id = {{ restaurant_id }}
+   window.location.href= `/restaurant/remove/${restaurant_id}/`;
 }
 
 

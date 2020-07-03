@@ -8,7 +8,7 @@ import json
 from project.models import Restaurant,Zone, Page
 from . import db
 from .db_queries import get_zones, update_zones, add_zone_to_db,  \
-                        update_restaurant, add_restaurant_to_db, get_next_restaurant_id
+                        update_restaurant, add_restaurant_to_db, delete_restaurant, get_next_restaurant_id
 
 import logging
 LOG = logging.getLogger(__name__)
@@ -69,6 +69,15 @@ def add_restaurant():
     return render_template("restaurants/restaurant_editing.html", restaurant=None, 
     zones=zones, restaurant_id=new_restaurant_id)
 
+
+@restaurants.route("/restaurant/remove/<restaurant_id>/", methods=["GET"])
+@login_required
+def remove_restaurant(restaurant_id):
+    restaurant = Restaurant.query.filter_by(id=restaurant_id).first()
+    if restaurant!=None:
+        delete_restaurant(restaurant_id)
+        return redirect(url_for("main.caricaLibroRistorante2", zone_id=restaurant.zone_id))
+    return redirect("/")
 
 @restaurants.route("/restaurants/save", methods=["POST"])
 @login_required

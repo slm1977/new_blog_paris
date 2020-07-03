@@ -13,7 +13,7 @@ class MenuTypes:
     RESTAURANT = 1
 
 def get_pages():
-    pages = Page.query.order_by(Page.index).all()
+    pages = Page.query.filter_by(deleted=False).order_by(Page.index).all()
     return pages
 
 def get_zones(order=Zone.index):
@@ -139,7 +139,8 @@ def add_page_to_db(menu_title, visible, index=None):
         filename= "page_%s.html" % (last_id+1)
         #path = "./project/static/menu_pages/%s" % filename
         path = ".%s" % url_for("static", filename="menu_pages/%s" % filename)
-        new_page = Page(menu_title=menu_title,path=path, index=int(index), visible=bool(visible), type=MenuTypes.PAGE)
+        new_page = Page(menu_title=menu_title,path=path, index=int(index), 
+        visible=bool(visible),deleted=bool(False), type=MenuTypes.PAGE)
 
         # add the new page to the database
         db.session.add(new_page)
@@ -194,10 +195,30 @@ def delete_page(page_id):
         return None
     filepath = page.path
     LOG.info("Sto rimuovendo la pagina con id:%s" % page.id)
+    #db.session.query(Page).filter(Page.id == page.id).delete(synchronize_session=False)
+    page.deleted = True
+    db.session.commit()
+    LOG.info("Pagina rimossa (contrassegnata come DELETED")
+    return filepath
+
+def delete_restaurant(restaurant_id):
+    rest = Restaurant.query.filter_by(id=restaurant_id).first()
+    if rest==None:
+        return None
+    rest.deleted = True
+    db.session.commit()
+    LOG.info("Ristorante rimosso (contrassegnato come DELETED")
+    return restaurant_id
+
+
+
+    filepath = page.path
+    LOG.info("Sto rimuovendo il ristorantae con id:%s" % page.id)
     db.session.query(Page).filter(Page.id == page.id).delete(synchronize_session=False)
     db.session.commit()
     LOG.info("Pagina rimossa")
-    return filepath
+    return restaurant_id
+
 
 
 

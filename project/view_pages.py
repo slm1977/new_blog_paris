@@ -7,7 +7,7 @@ from flask_login import login_required, current_user
 
 from .models import Page
 from . import db
-from .db_queries import get_pages, add_page_to_db, update_page, delete_page, update_pages_index, get_last_created_page, MenuTypes
+from .db_queries import get_pages, add_page_to_db, get_next_page_id, update_page, delete_page, update_pages_index, get_last_created_page, MenuTypes
 
 
 LOG = logging.getLogger(__name__)
@@ -89,14 +89,16 @@ def page_edit(page_id=None):
         print("pagina non editabile")
         return redirect("/")
     elif page_id==None or int(page_id)<0:
-        return render_template("page_editor.html", content="", page=None)
+        new_page_id = get_next_page_id()
+        return render_template("page_editor.html", content="", page=None, new_page_id=new_page_id)
     else:
         page = Page.query.filter_by(id=page_id).first()
         filepath = os.path.join(current_app.root_path, page.path)
         f = open(filepath, "r")
         content = f.read()
         f.close()
-        return render_template("page_editor.html", content=content, page=page)
+        new_page_id = page.id
+        return render_template("page_editor.html", content=content, page=page, new_page_id=new_page_id)
 
 
 @pages.route("/save/", methods=["POST"])
