@@ -73,10 +73,11 @@
                             <li><a class="nav-item nav-link" href="{{url_for('auth.login')}}">Area riservata</a></li>
                     
                     {% elif page_id==-2 %}
-                    <li><a href="{{url_for('pages.create_new_page')}}">Nuovo ristorante</a></li>
+                    <li><a href="{{url_for('restaurants.add_restaurant')}}">Nuovo ristorante</a></li>
                     <li><a href="{{url_for('restaurants.edit_zones')}}">Modifica quartieri</a></li>
                     <li><a href="{{url_for('auth.logout')}}">Esci dall'area riservata</a></li>
                     {% elif page_id==-3 %}
+                    <li><a href="{{url_for('restaurants.add_restaurant')}}">Nuovo ristorante</a></li>
                     <li><a href="{{url_for('main.edit_active_restaurant')}}">Modifica ristorante</a></li>
                     <li><a href="{{url_for('auth.logout')}}">Esci dall'area riservata</a></li>
                     {% else %}

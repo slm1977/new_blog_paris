@@ -150,7 +150,8 @@ ol.serialization li.placeholder:before {
             {
             console.log("SAVE OR EXIT");
              if (!modified)
-             window.location.href="{{url_for('main.home')}}";
+             //window.location.href="{{url_for('main.home')}}";
+             window.history.back()
              else
              {
                 $('#confirmExitModal').modal('show');
@@ -166,7 +167,7 @@ ol.serialization li.placeholder:before {
         }
         else
         {
-          window.location.href="{{url_for('main.home')}}";
+          window.history.back()
         }
 
           //<a style={'margin:20px;'} href="{{url_for('main.home')}}">Annulla</a>
@@ -324,7 +325,8 @@ ol.serialization li.placeholder:before {
                                 $('#formResponse').html(data["message"]);
 
                                 if (exitRequest==true)
-                                window.location.href="{{url_for('main.home')}}";
+                                //window.location.href="{{url_for('main.home')}}";
+                                window.history.back()
                                 else
                                 window.location.reload();
                             }

@@ -75,11 +75,21 @@ def get_restaurants_by_zone(zone_id, visible=None):
     else:
         return Restaurant.query.filter_by(deleted=False, zone_id=zone_id, visible=bool(visible)).order_by(Restaurant.id).all()
 
-def add_restaurant_to_db(name, address, topic, description, zone_id, orari, index=1):
+def get_next_restaurant_id():
+    last_id = Restaurant.query.order_by(Restaurant.id.desc()).first().id
+    return last_id+1
+
+def get_next_page_id():
+    last_id = Page.query.order_by(Page.id.desc()).first().id
+    return last_id+1
+
+def add_restaurant_to_db(rest_id, name, address, topic, description, zone_id, orari, 
+visible, latitude, longitude, images, index=1):
     try:
-        new_restaurant = Restaurant(name=name, address=address,
-                                   topic=topic, description=description,
-                                   zone_id=zone_id, orari=orari, index=index)
+        new_restaurant = Restaurant(name=name, address=address, 
+                topic=topic, description=description, zone_id=zone_id, 
+                orari=orari, visible=visible, latitude=latitude, longitude=longitude, 
+                images=images, index=index)
 
         LOG.info("Aggiunta su db del ristorante %s" % name )
         db.session.add(new_restaurant)
@@ -96,6 +106,10 @@ visible, latitude, longitude, images, index=1):
 
     try:
         rest = Restaurant.query.get(rest_id)
+        if rest==None:
+            return add_restaurant_to_db(rest_id, name, address, topic, description, zone_id, orari, 
+visible, latitude, longitude, images, index=1)
+
         rest.name = name
         rest.address = address
         rest.topic = topic

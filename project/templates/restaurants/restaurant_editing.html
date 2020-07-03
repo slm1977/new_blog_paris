@@ -288,7 +288,7 @@
 
     var exitRequest = false;
     var modified = false;
-    var restaurant_id = {{restaurant.id if restaurant != None else -1 }}
+    var restaurant_id = {{restaurant_id }}
 
     var latitude = {{restaurant.latitude if (restaurant != None and restaurant.latitude!=None) else "48.8925" }}
     var longitude =  {{restaurant.longitude if (restaurant != None and restaurant.longitude!=None) else "2.3444" }}
@@ -312,19 +312,7 @@ function getImagePaths()
 
  function return_to_restaurant()
  {
-    // se la pagina è stata creata ricarico quella
-    if (restaurant_id>0)
-            {
-             console.log("Ho a che fare con una pagina già esistente");
-             //window.location.href=`/load_restaurant/${restaurant_id}/`;
-             //history.go(-1);
-             window.history.back()
-            }
-        else
-            {
-              //window.location.href="/";
-              window.history.back()
-            }
+  window.history.back()
  }
 
 
@@ -348,7 +336,7 @@ function confirmDeleteRestaurant()
 
 function deleteRestaurant()
 {
-   var restaurant_id = {{restaurant.id if restaurant != None else -1 }}
+   let restaurant_id = {{ restaurant_id}}
    //if (restaurant_id<0)
    //window.location.href= "/"
    //else

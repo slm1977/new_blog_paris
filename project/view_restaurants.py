@@ -7,7 +7,8 @@ import json
 
 from project.models import Restaurant,Zone, Page
 from . import db
-from .db_queries import get_zones, update_zones, add_zone_to_db, update_restaurant
+from .db_queries import get_zones, update_zones, add_zone_to_db,  \
+                        update_restaurant, add_restaurant_to_db, get_next_restaurant_id
 
 import logging
 LOG = logging.getLogger(__name__)
@@ -57,7 +58,17 @@ def edit_zones():
 def edit_restaurant(restaurant_id):
     restaurant = Restaurant.query.filter_by(id=restaurant_id).first()
     zones = get_zones()
-    return render_template("restaurants/restaurant_editing.html", restaurant=restaurant, zones=zones)
+    return render_template("restaurants/restaurant_editing.html", 
+    restaurant=restaurant, zones=zones, restaurant_id=restaurant.id)
+
+@restaurants.route("/restaurant/add/", methods=["GET"])
+@login_required
+def add_restaurant():
+    zones = get_zones()
+    new_restaurant_id = get_next_restaurant_id()
+    return render_template("restaurants/restaurant_editing.html", restaurant=None, 
+    zones=zones, restaurant_id=new_restaurant_id)
+
 
 @restaurants.route("/restaurants/save", methods=["POST"])
 @login_required

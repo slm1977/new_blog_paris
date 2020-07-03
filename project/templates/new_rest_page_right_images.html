@@ -8,7 +8,7 @@
     aria-controls="mappa"
     aria-selected="true">Mappa</a>
   </li>
-  {% set imagePaths = [] if (rist==None or rist.images==None)  else  rist.images.split(',') %}
+  {% set imagePaths = [] if (rist==None or rist.images==None or rist.images|length<2)  else  rist.images.split(',') %}
   {% if imagePaths|length > 0 %}
   <li class="nav-item">
     <a class="nav-link" id="gallery-tab" data-toggle="tab" href="#galleria" role="tab" 
@@ -68,7 +68,7 @@
 
     $(document).ready(function()  {
         console.log("DOC PRONTO in new_rest_page_right template");
-        var latitude = {{rist.latitude if (rrist != None and rist.latitude!=None) else "48.8925" }}
+        var latitude = {{rist.latitude if (rist != None and rist.latitude!=None) else "48.8925" }}
         var longitude =  {{rist.longitude if (rist != None and rist.longitude!=None) else "2.3444" }}
         var map = null;
         var marker = null;

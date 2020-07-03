@@ -32,15 +32,6 @@ def home():
     page_id = menu[0].id
     return redirect("/load_page/%s" % page_id)
 
-"""
-@main.route("/ristoranti/")
-def mostra_ristoranti():
-    # (900,550) dimensione del book al 100%
-    ord_quartieri = list(ristoranti.keys())
-    ord_quartieri.sort()
-    print("QUARTIERI:%s" % ord_quartieri)
-    return render_template("blog_restaurants.html", quartieri= ord_quartieri, menu=get_pages(), page_id=-2)
-"""
 
 @main.route("/ristoranti/")
 def mostra_ristoranti():
@@ -51,21 +42,10 @@ def mostra_ristoranti():
     return render_template("new_blog_restaurants.html", quartieri= ord_quartieri, menu=get_pages(), page_id=-2)
     
 
-@main.route("/inner_book/<quartiere>/")
-def caricaLibroRistorante(quartiere):
-    return render_template("blog_restaurant.html", quartiere=quartiere,menu=get_pages(), page_id=-2)
-
 @main.route("/inner_book2/<zone_id>/")
 def caricaLibroRistorante2(zone_id):
     return render_template("new_blog_restaurant.html", zone_id=zone_id,menu=get_pages(), page_id=-3)
 
-
-@main.route("/book/<quartiere>/")
-def book(quartiere):
-    print("In book:%s" % quartiere);
-    myvideo = url_for("static", filename="fotoblog/ristoranti/levieuxbelleville.mp4")
-    return render_template("book2.html", ristoranti=ristoranti[quartiere], countRest=len(ristoranti[quartiere]),
-                           quartiere=quartiere, myvideo=myvideo)
 
 @main.route("/book2/<int:zone_id>/")
 def book2(zone_id):
@@ -78,26 +58,6 @@ def book2(zone_id):
     return render_template("new_book2.html", ristoranti=r, countRest=len(r),
                            quartiere=quartiere)
 
-
-
-
-
-@main.route("/ristoranti/<quartiere>/<int:n>/")
-def restaurants(quartiere,n):
-    r = ristoranti[quartiere]
-    print("Ristoranti del %s\n\n" % quartiere)
-    if (n==0):
-        return render_template('rest_page_front_title.html', rist=r[0])
-
-    #elif (n==len(r)-1 and n%2==1):
-    #    return render_template('rest_page_back.html', rist=r[n-1])
-
-    elif (n%2==1):
-        return render_template('rest_page_left.html', rist=r[int((n - 1) / 2)])
-    else:
-        return render_template('rest_page_right_images.html', rist=r[int((n-2) / 2)])
-
-
 @main.route("/ristoranti2/<int:zone_id>/<int:n>/")
 def restaurants2(zone_id,n):
     quartiere = get_zone(zone_id)
@@ -108,10 +68,6 @@ def restaurants2(zone_id,n):
     print("Ristoranti del %s\n\n" % r)
     if (n==0):
         return render_template('new_base_restaurants_front_title2.html', quartiere=quartiere.name)
-
-    #elif (n==len(r)-1 and n%2==1):
-    #    return render_template('rest_page_back.html', rist=r[n-1])
-
     elif (n%2==1):
         return render_template('new_rest_page_left.html', rist=r[int((n - 1) / 2)])
     else:
@@ -243,18 +199,4 @@ def insertRestaurants():
     return "Ok"
 """
 
-"""
-@main.route("/collage/")
-def collage():
-    return redirect(url_for("static", filename="collage/index.html"))
-
-
-
-@main.route("/video/<quartiere>/<int:n>/")
-def video(quartiere,n):
-    r = ristoranti[quartiere]
-    myvideo = url_for("static", filename="fotoblog/ristoranti/levieuxbelleville.mp4")
-    return render_template('rest_page_right.html', rist=r[n], myvideo=myvideo)
-
-"""
 
