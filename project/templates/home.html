@@ -78,7 +78,11 @@
                     <li><a href="{{url_for('auth.logout')}}">Esci dall'area riservata</a></li>
                     {% elif page_id==-3 %}
                     <li><a href="{{url_for('restaurants.add_restaurant')}}">Nuovo ristorante</a></li>
-                    <li><a href="{{url_for('main.edit_active_restaurant')}}">Modifica ristorante</a></li>
+                    
+                    <!--{% if session['active_restaurant_id'] and session['active_restaurant_id']|int>0 %}{% endif %} -->
+                        <li><a href="{{url_for('main.edit_active_restaurant')}}">Modifica ristorante</a></li>
+                    
+
                     <li><a href="{{url_for('auth.logout')}}">Esci dall'area riservata</a></li>
                     {% else %}
                     <li><a href="{{url_for('pages.create_new_page')}}">Nuova pagina</a></li>

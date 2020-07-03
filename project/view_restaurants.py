@@ -56,7 +56,13 @@ def edit_zones():
 @restaurants.route("/restaurant/edit/<restaurant_id>/", methods=["GET"])
 @login_required
 def edit_restaurant(restaurant_id):
+    LOG.debug("Cerco di caricare ristorante con id:%s" % restaurant_id)
+    if int(restaurant_id)<=0:
+        return redirect(request.referrer)
+        
     restaurant = Restaurant.query.filter_by(id=restaurant_id).first()
+
+    
     zones = get_zones()
     return render_template("restaurants/restaurant_editing.html", 
     restaurant=restaurant, zones=zones, restaurant_id=restaurant.id)

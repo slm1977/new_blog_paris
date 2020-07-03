@@ -44,6 +44,7 @@ def mostra_ristoranti():
 
 @main.route("/inner_book2/<zone_id>/")
 def caricaLibroRistorante2(zone_id):
+    session['active_zone_id'] = zone_id
     return render_template("new_blog_restaurant.html", zone_id=zone_id,menu=get_pages(), page_id=-3)
 
 
