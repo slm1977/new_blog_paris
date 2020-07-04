@@ -34,7 +34,7 @@ def home():
 
 @main.route("/offerte/")
 def offerte():
-    return render_template("offerte.html")
+    return render_template("offerte.html",  menu=get_pages(), page_id=-2)
 
 @main.route("/ristoranti/")
 def mostra_ristoranti():

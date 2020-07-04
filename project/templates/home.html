@@ -137,20 +137,29 @@
 
 
             <h3 class="blog_menu dancing">
-                ... e se ti sono stata un pochino utile, puoi offrirmi un caffè ;-)
+                ... e se ti sono stata un pochino utile, clicca qui ;-)
             </h3>
-        <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+            <span style="text-align: center;display: block;">
+                <a href="{{url_for('main.offerte')}}">
+                    <img  src="{{url_for('.static', filename='fotoblog/offerte/cuoreanimato.gif')}}" width="35%" height="-1"/>
+                </a>
+            </span>
+            <br>
+            <br>
+            <!--
+            <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
                 <input type="hidden" name="cmd" value="_s-xclick" />
                 <input type="hidden" name="hosted_button_id" value="PND6DJDEYC3VQ" />
                 <input type="image"
                        style="display: block;margin-left: auto;margin-right: auto;width:"
-                       width="35%" onmouseover="this.src='{{url_for('.static', filename='fotoblog/caffemickyFucsiaCircleTrBorder3hover.png')}}'"
-                       onmouseout="this.src='{{url_for('.static', filename='fotoblog/caffemickyFucsiaCircleTrBorder3.png')}}'"
-                       src="{{url_for('.static', filename='fotoblog/caffemickyFucsiaCircleTrBorder3.png')}}" border="0"
+                       width="35%" 
+                       src="{{url_for('.static', filename='fotoblog/offerte/cuoreanimato.gif')}}" border="0"
                        name="submit" alt="PayPal è il metodo rapido e sicuro per pagare e farsi pagare online." />
 
             <img alt="" border="0" src="https://www.paypalobjects.com/it_IT/i/scr/pixel.gif" width="1" height="1" />
-        </form>
+        </form> 
+            -->
+        
 
 
         <!-- Load Facebook SDK for JavaScript -->
