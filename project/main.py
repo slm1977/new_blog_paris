@@ -32,6 +32,9 @@ def home():
     page_id = menu[0].id
     return redirect("/load_page/%s" % page_id)
 
+@main.route("/offerte/")
+def offerte():
+    return render_template("offerte.html")
 
 @main.route("/ristoranti/")
 def mostra_ristoranti():
