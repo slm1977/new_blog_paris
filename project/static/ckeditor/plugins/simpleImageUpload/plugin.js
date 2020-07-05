@@ -4,9 +4,11 @@ CKEDITOR.plugins.add( 'simpleImageUpload', {
         
         fileDialog.on('change', function (e) {
             var uploadUrl = editor.config.uploadUrl;
+            //var pageId = editor.config.pageId;
 			var file = fileDialog[0].files[0];
 			var imageData = new FormData();
-			imageData.append('file', file);
+            imageData.append('file', file);
+            imageData.append('prefix', `page_${page_id}__`);
 
 			$.ajax({
 				url: uploadUrl,

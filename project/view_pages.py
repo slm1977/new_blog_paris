@@ -107,10 +107,12 @@ def save_page():
     form_data = request.form.get('content')
     menu_title = request.form.get('menu_title')
     page_id = request.form.get('id')
+    is_new = True if request.form.get('is_new')=="true" else False
     visible = True if request.form.get('visible')=="true" else False
+    print("Valore is_new: %s" % is_new)
     print("Salvo con menu %s" % menu_title)
     print("Valore di visibilità %s" % visible)
-    if page_id==None or int(page_id)<0:
+    if page_id==None or is_new:
         # crea una nuova pagina sul db e restituisce il path completo dove salvare il file
         newpage = add_page_to_db(menu_title=menu_title, visible=visible)
         if newpage!=None:
@@ -140,7 +142,7 @@ def save_page():
     else:
         result = {"success": False,
                   "message": "Impossibile salvare la pagina. Verificare la unicità della voce di menu!",
-                  "page_id" : -1}
+                  "page_id" : page_id}
         return jsonify(result)
 
 

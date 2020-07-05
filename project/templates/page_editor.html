@@ -104,15 +104,16 @@
     <script type="text/javascript">
     var exitRequest = false;
     var modified = false;
-    var page_id = {{page.id if page != None else -1 }}
+    var page_id = {{new_page_id }}
 
 
  function return_to_page()
  {
+   console.log("RETURN TO PAGE");
+  let is_new = {{ 'true' if page==None else 'false' }};
     // se la pagina è stata creata ricarico quella
-    if (page_id>0)
+    if (`${is_new}`=="false")
             {
-             console.log("Ho a che fare con una pagina già esistente");
              window.location.href=`/load_page/${page_id}/`;
             }
         else
@@ -120,7 +121,6 @@
               window.location.href="/";
             }
  }
-
 
  function exitOrSave()
     {
@@ -142,7 +142,7 @@ function confirmDeletePage()
 
 function deletePage()
 {
-   var page_id = {{page.id if page != None else -1 }}
+   var page_id = {{new_page_id }}
    if (page_id<0)
    window.location.href= "/"
    else
@@ -201,7 +201,8 @@ function exitFromEditing(saveOnExit)
 
 
             frm.submit(function (e) {
-
+                var is_new = {{ 'true' if page==None else 'false' }};
+                console.log(`IS NEW:${is_new}`);
                 e.preventDefault();
 
                 $.ajax({
@@ -210,7 +211,8 @@ function exitFromEditing(saveOnExit)
                     data: { 'content': CKEDITOR.instances.editor.getData(),
                              'menu_title' : $('#menu_title').val(),
                              'visible' : $('#visible_state').is(":checked"),
-                             'id' : page_id
+                             'id' : page_id,
+                             'is_new' : is_new
                         },
                     success: function (data) {
                         console.log('Submission was successful.');
@@ -262,7 +264,7 @@ function exitFromEditing(saveOnExit)
 
 <script src="{{url_for('static', filename='ckeditor/ckeditor.js')}}"></script>
 <script>
-
+var page_id = {{ new_page_id }}
 
 
  document.getElementById("editor").value = "<p>Some other editor data.</p>";
@@ -279,6 +281,7 @@ function exitFromEditing(saveOnExit)
                         'Dancing Script OT;',
             extraPlugins: ['widgetselection','lineutils','widget','image2','simpleImageUpload'],//['image2', 'simpleImageUpload','emoji'],
             uploadUrl : '/upload/',
+            pageId : page_id,
             dataParser: (data) => { console.log(`CKeditor upload image data Parser: ${data}`)}
 
                                              
