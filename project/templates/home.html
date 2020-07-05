@@ -81,6 +81,7 @@
                     
                     <!--{% if session['active_restaurant_id'] and session['active_restaurant_id']|int>0 %}{% endif %} -->
                         <li><a href="{{url_for('main.edit_active_restaurant')}}">Modifica ristorante</a></li>
+                        <li><a href="{{url_for('restaurants.sort_active_restaurants')}}">Ordina ristoranti</a></li>
                     
 
                     <li><a href="{{url_for('auth.logout')}}">Esci dall'area riservata</a></li>

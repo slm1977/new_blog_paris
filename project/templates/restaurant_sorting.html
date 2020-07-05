@@ -24,9 +24,9 @@ ol.serialization li.placeholder:before {
 }
 </style>
 
-<h1>Ordinamento delle pagine nel menu</h1>
+<h1>Ordinamento dei ristoranti del quartiere {{ zone.name }}</h1>
 
-<form style="margin-left:10px;" id="sorting_form" method="POST", action="{{url_for("pages.sort_pages")}}">
+<form style="margin-left:10px;" id="sorting_form" method="POST", action="{{url_for("restaurants.sort_active_restaurants")}}">
 <p>
 
 
@@ -42,15 +42,16 @@ ol.serialization li.placeholder:before {
 </p>
 
 
-
+  <!--
     <div id="editor" name="editor_div">
-        <p id="page_content">{{content|safe}}</p>
+        <p id="restaurant_content">{{content|safe}}</p>
     </div>
+-->
 
 </form>
 <ol class='serialization'>
-  {% for p in pages %}
-  <li id="{{p.id}}" class="serialize alert alert-success">{{p.menu_title}}</li>
+  {% for r in restaurants %}
+  <li id="{{r.id}}" class="serialize alert alert-success">{{r.name}}</li>
    {% endfor %}
 
 
@@ -97,7 +98,8 @@ ol.serialization li.placeholder:before {
             {
             console.log("SAVE OR EXIT");
              if (!modified)
-             window.location.href="{{url_for('main.home')}}";
+             //window.location.href="{{url_for('main.home')}}";
+             window.history.back()
              else
              {
                 $('#confirmExitModal').modal('show');
@@ -113,23 +115,21 @@ ol.serialization li.placeholder:before {
         }
         else
         {
-          window.location.href="{{url_for('main.home')}}";
+          //window.location.href="{{url_for('main.home')}}";
+          window.history.back()
         }
 
-          //<a style={'margin:20px;'} href="{{url_for('main.home')}}">Annulla</a>
-          //<button onclick="exitFromEditing()">Esci</button>
         }
 
 
 
         // Shorthand for $( document ).ready()
         $(function() {
-
         modified = false;
 
-        var pages_id = {{pages_id|tojson}};
-        console.log("Ordine iniziale pagine:");
-        console.log(pages_id);
+        var restaurants_id = {{restaurants_id|tojson}};
+        console.log("Ordine iniziale ristoranti:");
+        console.log(restaurants_id);
 
          $("#exitButton").click(function(){
                     exitOrSave();
@@ -145,9 +145,9 @@ ol.serialization li.placeholder:before {
                 },
                 onDrop: function ($item, container, _super) {
 
-                   // aggiorno il valore degli id delle pagine
-                   pages_id =  group.sortable("serialize").get().join("\n");
-                   console.log(pages_id);
+                   // aggiorno il valore degli id dei ristoranti
+                   restaurants_id =  group.sortable("serialize").get().join("\n");
+                   console.log(restaurants_id);
 
                   _super($item, container);
 
@@ -173,7 +173,7 @@ ol.serialization li.placeholder:before {
                 $.ajax({
                     type: frm.attr('method'),
                     url: frm.attr('action'),
-                    data: { 'pages_id':pages_id,
+                    data: { 'restaurants_id':restaurants_id,
 
                     },
                     success: function (data) {
@@ -187,7 +187,8 @@ ol.serialization li.placeholder:before {
                                 $('#formResponse').html(data["message"]);
 
                                 if (exitRequest==true)
-                                window.location.href="{{url_for('main.home')}}";
+                                //window.location.href="{{url_for('main.home')}}";
+                                window.history.back()
                             }
                            else
 

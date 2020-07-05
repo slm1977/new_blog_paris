@@ -71,9 +71,9 @@ def add_zone_to_db(zone_title, index=1):
 
 def get_restaurants_by_zone(zone_id, visible=None):
     if visible==None:
-        return Restaurant.query.filter_by(deleted=False, zone_id=zone_id).order_by(Restaurant.id).all()
+        return Restaurant.query.filter_by(deleted=False, zone_id=zone_id).order_by(Restaurant.index).all()
     else:
-        return Restaurant.query.filter_by(deleted=False, zone_id=zone_id, visible=bool(visible)).order_by(Restaurant.id).all()
+        return Restaurant.query.filter_by(deleted=False, zone_id=zone_id, visible=bool(visible)).order_by(Restaurant.index).all()
 
 def get_next_restaurant_id():
     last_id = Restaurant.query.order_by(Restaurant.id.desc()).first().id
@@ -128,6 +128,25 @@ visible, latitude, longitude, images, index=1)
         LOG.error("Eccezione nell'aggiornamento del ristorante %s sul db:%s" % (rest_id,ex))
         #raise ex
         return None
+
+def update_restaurants_index(id_list):
+    try:
+        id_list = id_list.split(",")
+        LOG.info("Lista degli id ordinati:%s" % id_list)
+        for i in range(len(id_list)):
+            rest = Restaurant.query.get(int(id_list[i]))
+            if rest:
+                rest.index = (i+1)
+                db.session.commit()
+            else:
+                print("Ristorante con id:%s non trovato nella lista" % id_list[i] )
+        result = {"success": True, "message": "Ordine dei ristoranti aggiornato"}
+        return result
+    except Exception as ex:
+        LOG.error("Eccezione salvataggio ordinamento:%s" % ex)
+        db.session.rollback()
+        result =  {"success": False, "message": "Eccezione salvataggio ordinamento:%s" % ex}
+        return result
 
 
 def add_page_to_db(menu_title, visible, index=None):

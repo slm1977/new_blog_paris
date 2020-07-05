@@ -7,8 +7,8 @@ import json
 
 from project.models import Restaurant,Zone, Page
 from . import db
-from .db_queries import get_zones, update_zones, add_zone_to_db,  \
-                        update_restaurant, add_restaurant_to_db, delete_restaurant, get_next_restaurant_id
+from .db_queries import get_zone, get_zones, update_zones, add_zone_to_db,  \
+                        update_restaurant, update_restaurants_index, get_restaurants_by_zone, add_restaurant_to_db, delete_restaurant, get_next_restaurant_id
 
 import logging
 LOG = logging.getLogger(__name__)
@@ -59,14 +59,41 @@ def edit_restaurant(restaurant_id):
     LOG.debug("Cerco di caricare ristorante con id:%s (active page index:%s)" % 
     (restaurant_id, session['active_page_index']))
     if int(restaurant_id)<=0:
-        return redirect(request.referrer)
-        
+        return redirect(request.referrer)   
     restaurant = Restaurant.query.filter_by(id=restaurant_id).first()
-
-    
     zones = get_zones()
     return render_template("restaurants/restaurant_editing.html", 
     restaurant=restaurant, zones=zones, restaurant_id=restaurant.id)
+
+@restaurants.route("/restaurant/sort_active/", methods=["GET", "POST"])
+@login_required
+def sort_active_restaurants():
+    if request.method=="GET":
+        active_zone_id = session['active_zone_id']
+        if active_zone_id!=None:
+            return redirect(url_for("restaurants.sort_restaurants", zone_id=active_zone_id))
+        else:
+            return redirect(request.referrer) 
+    else:
+        restaurants_id = request.form['restaurants_id']
+        print(request.form.to_dict().keys())
+        print("ID RISTORANTI DA AGGIORNARE:")
+        print(restaurants_id)
+        result = update_restaurants_index(restaurants_id)
+        return jsonify(result)
+
+@restaurants.route("/restaurant/sort/<zone_id>/", methods=["GET"])
+@login_required
+def sort_restaurants(zone_id):
+    if request.method=="GET":
+        restaurants_id = []
+        zone = get_zone(zone_id)
+        restaurants= get_restaurants_by_zone(zone_id)
+        for r in restaurants:
+            restaurants_id.append(r.id)
+        print("ID ristoranti:%s" % restaurants_id)
+        return render_template("restaurant_sorting.html", zone=zone, restaurants=restaurants, restaurants_id=restaurants_id)
+    
 
 @restaurants.route("/restaurant/add/", methods=["GET"])
 @login_required
