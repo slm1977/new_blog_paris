@@ -8,7 +8,7 @@
     <div class="field">
         <div class="control">
             <label for="menu_title">Voce sul menu della pagina: </label>
-            <input name="menu_title" id="menu_title"  onchange="notifyChanges()" type="text" 
+            <input name="menu_title" id="menu_title"  onkeypress="notifyChanges()" type="text" 
             value="{{page.menu_title if page != None }}" required/><br>
 
         </div>

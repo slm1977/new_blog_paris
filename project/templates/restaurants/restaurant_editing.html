@@ -3,11 +3,11 @@
 {% block content %}
 
 <form style="margin-left:10px;" id="editing_form" method="POST", action="{{url_for("restaurants.save_restaurant")}}">
-<p>
+</br>
     <div class="field">
         <div class="control">
             <label for="rest_title">Nome del ristorante: </label>
-            <input name="rest_title" id="rest_title"  onchange="notifyChanges()" type="text"
+            <input name="rest_title" id="rest_title"  onkeypress="notifyChanges()" type="text"
                    size="100%"
                    value="{{restaurant.name if restaurant != None }}" required/><br>
         </div>
@@ -22,11 +22,26 @@
     </div>
 </div>
 
-</br>
+<!-- Button trigger modal -->
+<button type="button" id="exitButton" class="btn btn-primary">
+  Esci
+</button>
+
+<input type="submit" id="saveButton" class="btn btn-primary" value="Salva"/>
+
+<button type="button" id="deleteButton" class="btn btn-danger">
+  Elimina
+</button>
+
+<div style="margin-top:10px;" class="alert" role="alert" id="formResponse">
+</div>
+
+
+<div id="scrollableFields"  width="100%" style="max-height:600px;overflow:scroll;"> 
 
 <div class="field">
     <label for="zones">Zona: </label>
-<select id="zones">
+<select id="zones" onchange="notifyChanges()">
     {% for z in zones %}
      <option value="{{z.id}}" size="100%" {{'selected' if (restaurant!=None and restaurant.zone.id==z.id) or (session['active_zone_id'] and session['active_zone_id']|int==z.id)}}>{{z.name}}</option>
     {% endfor %}
@@ -37,7 +52,8 @@
 <div class="field">
         <div class="control">
             <label for="orari">Orari: </label>
-            <input name="orari" id="orari"  onchange="notifyChanges()" type="text"
+            <input name="orari" id="orari"  
+                  onkeypress="notifyChanges()" type="text"
                    size="80%"
                    value="{{restaurant.orari if restaurant != None }}" /><br>
         </div>
@@ -46,7 +62,7 @@
 <div class="field">
         <div class="control">
             <label for="address">Indirizzo: </label>
-            <input name="address" id="address"  onchange="notifyChanges()" type="text"
+            <input name="address" id="address"  onkeypress="notifyChanges()" type="text"
                    size="80%"
                    value="{{restaurant.address if restaurant != None }}" />
             <button type="button" id="geocodeButton" class="btn btn-primary" onclick='geocodeAddress()'>
@@ -81,7 +97,12 @@
   <label for="description" style="display:block;">Galleria delle immagini</label>
 
  <!-- Photo gallery-->
- 
+ <div>
+  <input type="button" class="btn btn-primary" value="Carica immagine" onclick="notifyChanges();document.getElementById('getFile').click()"/>
+  <input type=file name=file id="getFile" style="display:none">
+  <input type="button" class="btn btn-primary alert-danger" id="butRemoveImage" value="Elimina immagine"/>
+</div>
+
  <div class="gallery-container" >
 <div id="image-slider" class="splide js-thumbnails">
 	<div class="splide__track">
@@ -98,13 +119,6 @@
   </div>
 </div>
 </div>
-<br><br><br><br><br>
-<div>
-  <input type="button" class="btn btn-primary" value="Carica immagine" onclick="document.getElementById('getFile').click()"/>
-  <input type=file name=file id="getFile" style="display:none">
-  <input type="button" class="btn btn-primary alert-danger" id="butRemoveImage" value="Elimina immagine"/>
-</div>
-
 
 
 </div>
@@ -113,22 +127,8 @@
 </div>
 </br>
 
-
-
-<!-- Button trigger modal -->
-    <button type="button" id="exitButton" class="btn btn-primary">
-      Esci
-    </button>
-
-    <input type="submit" id="saveButton" class="btn btn-primary" value="Salva"/>
-
-    <button type="button" id="deleteButton" class="btn btn-danger">
-      Elimina
-    </button>
-
-<div style="margin-top:10px;" class="alert" role="alert" id="formResponse">
+<p>Fine form</p>
 </div>
-</p>
 
 
 
@@ -248,6 +248,7 @@
 
     var removeButton =  document.querySelector( '#butRemoveImage' );   //$("#butRemoveImage");
       removeButton.addEventListener( 'click', function() {
+      notifyChanges();
       console.log(`Rimuovo la immagine con indice ${splide.index}`); 
       splide.remove(splide.index);
       console.log("Elenco delle slides");
