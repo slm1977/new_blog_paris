@@ -19,7 +19,7 @@
 <script type="text/javascript" src="{{ url_for('static', filename='lib/hash.js')}}">
 </script>
 
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
 
@@ -43,16 +43,27 @@ body{
 <div class="flipbook-viewport">
 
 
-	<div class="container">
+	<div class="container" style={position:absolute}>
 		<div class="flipbook">
 			{%for i in range(2*countRest+1) %}
+			
 				<div class="parent"  id="{{quartiere}}_{{i}}"  style="background-color: transparent;">
-					<br>
+				{% if i%2==0 and (i<2*countRest) %}
+					<button style="background-color:rgb(226, 42, 42); color:rgb(238, 218, 218);position:relative;float: right;"><i class="fa fa-arrow-right "></i></button>
+					{% elif i%2==1 and (i<2*countRest) %}
+					<button style="background-color:rgb(226, 42, 42); color:rgb(238, 218, 218)"><i class="fa fa-arrow-left"></i></button>
+					{% else %}
+					<button onclick="$('.flipbook').turn('page',1)"  style="background-color:rgb(226, 42, 42); color:rgb(238, 218, 218);position:relative;float: right;"><i class="fa fa-home"></i></button>
+				    
+					{% endif %}
+				 
 					<iframe id="page_{{i}}_content" 
 					onload='iframeLoaded("page_{{i}}_content")'
 					class="contentFrame" frameBorder="0"
 					src='{{ url_for("main.restaurants2", zone_id=quartiere.id, n=i) }}'> 
-					</iframe>
+					
+				</iframe>
+					
 				</div>
 			
 			{% endfor %}
