@@ -1,4 +1,4 @@
-from flask import Flask, Blueprint, render_template, request, redirect, url_for, jsonify
+from flask import Flask, Blueprint, session, render_template, request, redirect, url_for, jsonify
 from flask_login import login_required, current_user
 
 import os
@@ -56,7 +56,8 @@ def edit_zones():
 @restaurants.route("/restaurant/edit/<restaurant_id>/", methods=["GET"])
 @login_required
 def edit_restaurant(restaurant_id):
-    LOG.debug("Cerco di caricare ristorante con id:%s" % restaurant_id)
+    LOG.debug("Cerco di caricare ristorante con id:%s (active page index:%s)" % 
+    (restaurant_id, session['active_page_index']))
     if int(restaurant_id)<=0:
         return redirect(request.referrer)
         

@@ -86,10 +86,7 @@ function iframeLoaded(frameId)
 {
 	$(document.getElementById(frameId).contentWindow.document).keydown(
 		function(e){ 
-	    //alert('Key down:' + e.keyCode); 
-		//$("element").trigger("keydown");
 		console.log("propago keydown al parent")
-		//$(parent.document)
 		$(document).trigger(e)
 		});
 }
@@ -109,8 +106,6 @@ function loadApp() {
 	// Create the flipbook
 
 	$(".flipbook").bind("end", function(event, pageObject, turned){
-			
-			//alert(`turn.end zona:{{quartiere.id}} pagina: ${$(".flipbook").turn("page")}`);
 			$.ajax({
 				url: "/set_active_restaurant/",
 				type: 'POST',

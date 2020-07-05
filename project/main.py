@@ -94,7 +94,7 @@ def set_active_restaurant():
     restaurant_id = r[int(page_index)//2-1].id
     session['active_restaurant_id'] = restaurant_id
     session['active_zone_id'] = zone_id
-    session['active_page_index'] = page_index
+    session['active_page_index'] = page_index if page_index!=None else 1
     print("salvata variabile di sessione zona:%s ristorante:%s" % (session['active_zone_id'],
                                                                    session['active_restaurant_id']))
     return jsonify({"success" : True})
@@ -104,7 +104,7 @@ def set_active_restaurant():
 def unset_active_restaurant():
     session['active_restaurant_id'] = 0
     session['active_zone_id'] = 0
-    session['active_page_index'] = 0
+    session['active_page_index'] = 1 
     """
     session.pop('active_restaurant_id', None)
     session.pop('active_zone_id', None)
