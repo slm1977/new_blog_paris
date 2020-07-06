@@ -46,17 +46,21 @@ body{
 	<div class="container" style={position:absolute}>
 		<div class="flipbook">
 			{%for i in range(2*countRest+1) %}
-			
+		
 				<div class="parent"  id="{{quartiere}}_{{i}}"  style="background-color: transparent;">
-				{% if i%2==0 and (i<2*countRest) %}
-					<button style="background-color:rgb(226, 42, 42); color:rgb(238, 218, 218);position:relative;float: right;"><i class="fa fa-arrow-right "></i></button>
+		
+					{% if i%2==0 and (i<2*countRest) %}
+				<button style="background-color:rgb(226, 42, 42); color:rgb(238, 218, 218);position:relative;float: right;"><i class="fa fa-arrow-right"></i></button>
+				
 					{% elif i%2==1 and (i<2*countRest) %}
 					<button style="background-color:rgb(226, 42, 42); color:rgb(238, 218, 218)"><i class="fa fa-arrow-left"></i></button>
+					
 					{% else %}
 					<button onclick="$('.flipbook').turn('page',1)"  style="background-color:rgb(226, 42, 42); color:rgb(238, 218, 218);position:relative;float: right;"><i class="fa fa-home"></i></button>
-				    
+				    <button onclick="window.parent.location.href='/ristoranti/'" style="background-color:rgb(226, 42, 42); color:rgb(238, 218, 218);position:relative;float: right;"><i class="fa fa-cutlery"></i></button>
+			
 					{% endif %}
-				 
+					
 					<iframe id="page_{{i}}_content" 
 					onload='iframeLoaded("page_{{i}}_content")'
 					class="contentFrame" frameBorder="0"
@@ -67,6 +71,23 @@ body{
 				</div>
 			
 			{% endfor %}
+<!-- 
+			<div>
+				<h2 style="margin-left: 20px;" >
+					Indice dei contenuti
+				</h2>
+				<br>
+				<br>
+				<ul>
+				{%for i in range(countRest) %}
+				 <li>
+					 <button onclick="alert(`click on {{i}}`)" type="button" class="btn btn-link">{{ristoranti[i].name}}</button>
+				 </li>
+				{% endfor %}
+				</ul>
+
+			</div>
+		-->
 		</div>
 	</div>
 
@@ -120,6 +141,9 @@ function loadApp() {
 			});
 
 	$('.flipbook').turn({
+			
+			
+		//"options" :{turnCorners: "bl,br"},
 			// Width
 
 			width:720,
@@ -145,7 +169,7 @@ function loadApp() {
  
 	});
 
-
+	
 
 	// Using arrow keys to turn the page
 

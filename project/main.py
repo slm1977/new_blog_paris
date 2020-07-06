@@ -34,7 +34,7 @@ def home():
 
 @main.route("/offerte/")
 def offerte():
-    return render_template("offerte.html",  menu=get_pages(), page_id=-2)
+    return render_template("offerte.html",  menu=get_pages(), page_id=-2, minicontent=True)
 
 @main.route("/ristoranti/")
 def mostra_ristoranti():
@@ -61,6 +61,15 @@ def book2(zone_id):
     r = get_restaurants_by_zone(zone_id)
     return render_template("new_book2.html", ristoranti=r, countRest=len(r),
                            quartiere=quartiere)
+
+@main.route("/ristoranti2/indice/<int:zone_id>/")
+def zone_restaurants_index(zone_id):
+    quartiere = get_zone(zone_id)
+    zone = get_zone(zone_id)
+    if quartiere==None:
+        abort(404)
+    r = get_restaurants_by_zone(zone_id)
+    return render_template("index_of_contents_restaurants_left.html",  countRest = len(r), rist=r, zone=zone)
 
 @main.route("/ristoranti2/<int:zone_id>/<int:n>/")
 def restaurants2(zone_id,n):

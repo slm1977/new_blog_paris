@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+	
+</head>
+<body>
+<style>
+  
+  @import url(https://fonts.googleapis.com/css?family=Indie+Flower);
+
+html { overflow: hidden; }
+
+body {
+  margin: 0;
+  padding: 0;
+  background: lightgoldenrodyellow;
+}
+
+.unselectable {
+        -webkit-touch-callout: none; /* iOS Safari */
+        -webkit-user-select: none; /* Safari */
+         -khtml-user-select: none; /* Konqueror HTML */
+           -moz-user-select: none; /* Old versions of Firefox */
+            -ms-user-select: none; /* Internet Explorer/Edge */
+                user-select: none; /* Non-prefixed version, currently
+                                      supported by Chrome, Opera and Firefox */
+    }
+
+.paper {
+  position: absolute;
+  height: 550px;
+  width: 450px;
+  background: rgba(255,255,255,0.9);
+  margin: -275px -225px;
+  left: 50%;
+  top: 50%;
+  box-shadow: 0px 0px 5px 0px #888;
+}
+.paper::before {
+  content: '';
+  position: absolute;
+  right: 45px;
+  height: 100%;
+  width: 2px;
+  background: rgba(255,0,0,0.4);
+}
+.lines {
+  margin-top: 40px;
+  height: calc(100% - 40px);
+  width: 100%;
+  background-image: repeating-linear-gradient(white 0px, white 24px, steelblue 25px);
+}
+
+
+
+.titolo {
+ text-align: left;
+ margin-left: 15px;
+ font-weight: bold;
+ font-size: 150%;
+ font-family: 'Indie Flower';
+}
+
+.indice {
+ position: relative;
+ top: 20px;
+ margin-top:-2px;
+ text-align: left;
+ font-weight: normal;
+ font-size: 70%;
+ font-family: 'Times New Roman';
+
+}
+
+
+.text_caratteristiche {
+  position: absolute;
+  top: 173px;
+  bottom: 10px;
+  left: 15px;
+  right: 10px;
+  line-height: 25px;
+  //font-family: 'Indie Flower';
+  font-family: 'Times New Roman';
+  overflow: hidden;
+  outline: none;
+  font-size: 120%;
+}
+
+
+
+.holes {
+  position: absolute;
+  right: 10px;
+  height: 25px;
+  width: 25px;
+  background: lightgoldenrodyellow;
+  border-radius: 50%;
+  box-shadow: inset 0px 0px 2px 0px #888;
+}
+.hole-top {
+  top: 10%;
+}
+
+.rings-top {
+  top: 10%;
+}
+
+.rings2-top {
+  top: 11%;
+}
+
+.rings-middle {
+  top: 50%;
+}
+
+.rings2-middle {
+  top: 51%;
+}
+
+.rings-bottom {
+  bottom: 9%;
+}
+
+.rings2-bottom {
+  bottom: 10%;
+}
+
+
+.hole-middle {
+  top: 50%;
+}
+.hole-bottom {
+  bottom: 10%;
+}
+
+
+ .rings {
+  position: absolute;
+  right:  -30px;
+  height: 50px;
+  width: 50px;
+  height: 25px;
+  border: 2px solid #000000;
+  border-radius: 100% 100% 100% 100%;
+  clip-path: polygon(0% 50%, 100% 50%, 100% 100%, 0% 100%);
+  transform: rotate(180deg);
+
+}
+
+
+</style>
+<div class="paper">
+
+
+  <div class="lines">
+     <div class="titolo unselectable" spellcheck="false" >
+      {% block intestazione %}
+       Indice
+        {% endblock %}
+
+       <div class="indice unselectable" spellcheck="false" >
+          {% block indice %}
+          {%for i in range(countRest) %}
+				 <li>
+           <button onclick="setActivePageIndex({{i}})" 
+           type="button" style="color: #000000; margin:0px;" class="btn btn-link">
+            {{rist[i].name}}</button>
+				 </li>
+				{% endfor %}
+            
+        {% endblock %}
+    </div>
+
+    
+
+
+    </div>
+
+
+  </div>
+  <div class="holes hole-top"></div>
+  <div class="holes hole-middle"></div>
+  <div class="holes hole-bottom"></div>
+
+  <div class="rings rings-top"></div>
+  <div class="rings rings2-top"></div>
+
+  <div class="rings rings-middle"></div>
+  <div class="rings rings2-middle"></div>
+
+  <div class="rings rings-bottom"></div>
+  <div class="rings rings2-bottom"></div>
+
+</div>
+
+<script type="text/javascript" src="{{ url_for('static', filename='extras/jquery.min.1.7.js') }}">
+</script>
+<script type="text/javascript">
+// Shorthand for $( document ).ready()
+
+function setActivePageIndex(index)
+{
+  alert(`Setting active page index:${index}`)
+}
+$(function() {
+	
+  alert( "ready!" );
+});
+</script>
+</body>
+</html>

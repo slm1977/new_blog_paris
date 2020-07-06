@@ -16,8 +16,9 @@
 		</tr>
 		<tr>
 			<td>&nbsp;</td>
-			<td align="center"><img  class="imageBorder" alt="Macarons" height="-1" src="/uploads/macarons_2_EUR.jpg" width="215px" /></td>
-			<td> </td>
+			<td align="center">
+				<img  class="imageBorder" alt="Macarons" height="-1" src="/uploads/macarons_2_EUR.jpg" width="215px" /></td>
+				<td></td>
 		</tr>
 		<tr>
 			<td style="text-align:center">&nbsp;</td>
@@ -71,6 +72,42 @@
 		</tr>
 	</tbody>
 </table>
+<p>Paypal</p>
+<form style="padding:0px;" id="paypalForm" action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+	<input type="hidden" name="cmd" value="_s-xclick" />
+	<input type="hidden" name="hosted_button_id" value="PND6DJDEYC3VQ" />
+	<input type="hidden" name="amount" value="5"/>
+	<input type="hidden" name="currency_code" value="EUR"/>
+  <label class="label1">
+	<input type="image" class="imageBorder" 
+		   style="display: block;"
+		   width="100%" 
+		   src="{{url_for('.static', filename='fotoblog/offerte/macarons_2_EUR.jpg')}}" border="0"
+		   name="submit" alt="PayPal è il metodo rapido e sicuro per pagare e farsi pagare online." />
+		   <span style="cursor: pointer; display:block;text-align: center; font-family:Times New Roman,Times,serif"><em>Un Macaron (2 </em>&euro;<em>)&nbsp;</em></span>
+	</label>
+			<img alt="" border="0" src="https://www.paypalobjects.com/it_IT/i/scr/pixel.gif" width="1" height="1" />
+</form>
+<form style="padding:0px;" id="paypalForm" action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+	<input type="hidden" name="cmd" value="_s-xclick" />
+	<input type="hidden" name="hosted_button_id" value="PND6DJDEYC3VQ" />
+	<input type="hidden" name="amount" value="5"/>
+	<input type="hidden" name="currency_code" value="EUR"/>
+  <label class="label2">
+	<input type="image" class="imageBorder" 
+		   src="{{url_for('.static', filename='fotoblog/offerte/petit_dejeneur__5_EUR.jpg')}}" border="0"
+		   name="submit" alt="PayPal è il metodo rapido e sicuro per pagare e farsi pagare online." />
+		   <span style="cursor: pointer; 
+		   display:block;
+		   text-align: center; 
+		   font-family:Times New Roman,Times,serif;"><em>&nbsp;une Petit Dejuner (5&nbsp;</em>&euro;<em>)</em></span>
+	</label>
+			<img alt="" border="0" src="https://www.paypalobjects.com/it_IT/i/scr/pixel.gif" width="1" height="1" />
+</form>
+<p>End Paypal 2</p>
+
+
+</br>
 </div>
 </div>
 {% endblock %}
@@ -78,12 +115,38 @@
 {% block styles %}
 {{super()}}
     <style>
+
+  .label1 {
+	max-width:220px;
+	margin-left: 20px;
+	display:block;
+	}
+
+	.label2 {
+	max-width:220px;
+	margin-left: 280px;
+	display:block;
+	}
+
+	
+
+		label span {
+		text-align:center;
+		display:block;
+		}
+		label input {
+			
+		width:100%;
+		}
+
         .imageBorder {
             border-radius: 30px;
             border:5px solid #FFFFFF;
         }
 
-        td {align:"center"}
-
     </style>
 {% endblock %}
+
+<!-- 
+https://gabrieleiacovone.net/come-integrare-il-form-di-elementor-con-un-bottone-paypal/
+-->
