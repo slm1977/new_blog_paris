@@ -73,8 +73,9 @@ def zone_restaurants_index(zone_id):
     for r in rist:
         rist_info.append({"id": r.id, "name":r.name, 
         "lat" : r.latitude, "lon" : r.longitude})
-    #return render_template("index_of_contents_restaurants_left.html",  countRest = len(rist), rist=r, quartiere=zone)
-    return render_template("index_of_contents_restaurants_right.html",  countRest = len(rist), rist=rist_info, quartiere=zone)
+    return render_template("index_of_contents_restaurants_left.html",  countRest = len(rist), rist=r, quartiere=zone)
+    
+    #return render_template("index_of_contents_restaurants_right.html",  countRest = len(rist), rist=rist_info, quartiere=zone)
 
 @main.route("/ristoranti2/<int:zone_id>/<int:n>/")
 def restaurants2(zone_id,n):
@@ -82,21 +83,34 @@ def restaurants2(zone_id,n):
     if quartiere==None:
         abort(404)
     print("ZONA: %s" % quartiere.name)
-    r = get_restaurants_by_zone(zone_id)
-    print("Ristoranti del %s\n\n" % r)
+    rist = get_restaurants_by_zone(zone_id)
+    zone = get_zone(zone_id)
+    print("Ristoranti del %s\n\n" % rist)
     if (n==0):
         return render_template('new_base_restaurants_front_title2.html', quartiere=quartiere.name)
+    elif (n==1):
+        return render_template("index_of_contents_restaurants_left.html",  
+        countRest = len(rist), rist=rist, quartiere=zone)
+    elif (n==2):
+        rist_info = []
+        for r in rist:
+            rist_info.append({"id": r.id, "name":r.name, 
+        "lat" : r.latitude, "lon" : r.longitude})
+        return render_template("index_of_contents_restaurants_right.html",  countRest = len(rist), rist=rist_info, quartiere=zone)
     elif (n%2==1):
-        return render_template('new_rest_page_left.html', rist=r[int((n - 1) / 2)])
+        return render_template('new_rest_page_left.html', rist=rist[int((n - 3) / 2)])
     else:
-        return render_template('new_rest_page_right_images.html', rist=r[int((n-2) / 2)])
+        return render_template('new_rest_page_right_images.html', rist=rist[int((n-4) / 2)])
 
 
 @main.route('/edit_active_restaurant/', methods=['GET'])
 @login_required
 def edit_active_restaurant():
     restaurant_id = session['active_restaurant_id'] 
-    zone_id = session['active_zone_id'] 
+    if restaurant_id==None or restaurant_id<1:
+        return redirect(request.referrer)
+
+    #zone_id = session['active_zone_id'] 
     return redirect("/restaurant/edit/%s/" % restaurant_id)
 
 @main.route('/set_active_restaurant/', methods=['POST'])
@@ -105,7 +119,8 @@ def set_active_restaurant():
     zone_id = request.form.get('zone_id', None)
     page_index = request.form.get('page_index', None)
     r = get_restaurants_by_zone(zone_id)
-    restaurant_id = r[int(page_index)//2-1].id
+    r_index = int(page_index)//2-2
+    restaurant_id = None if (r_index<0 or r_index>=len(r)) else r[r_index].id
     session['active_restaurant_id'] = restaurant_id
     session['active_zone_id'] = zone_id
     session['active_page_index'] = page_index if page_index!=None else 1

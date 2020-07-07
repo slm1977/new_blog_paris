@@ -178,7 +178,7 @@ body {
 
     <div class="altri_quartieri unselectable" spellcheck="false" >
       <p style="text-align: center;">
-        <button onclick="window.location.href='/ristoranti/'" 
+        <button onclick="window.parent.parent.location.href='/ristoranti/'" 
            type="button" style="color: #000000; margin-left:-40px;" class="btn btn-link">
             Visita i ristoranti degli altri quartieri</button>
       </p>
@@ -220,7 +220,7 @@ function setActivePageIndex(rist_id, index)
                         }
 			}).done(function(done) {
 			// ricarico la pagina del ristorante corrente
-      document.location.href=`/inner_book2/${ {{quartiere.id}} }/`;
+      document.location.parent.parent.href=`/inner_book2/${ {{quartiere.id}} }/`;
 			});
 }
 $(function() {

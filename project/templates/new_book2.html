@@ -45,14 +45,14 @@ body{
 
 	<div class="container" style={position:absolute}>
 		<div class="flipbook">
-			{%for i in range(2*countRest+1) %}
+			{%for i in range(2*countRest+3) %}
 		
 				<div class="parent"  id="{{quartiere}}_{{i}}"  style="background-color: transparent;">
 		
-					{% if i%2==0 and (i<2*countRest) %}
+					{% if i%2==0 and (i<2*countRest+2) %}
 				<button style="background-color:rgb(226, 42, 42); color:rgb(238, 218, 218);position:relative;float: right;"><i class="fa fa-arrow-right"></i></button>
 				
-					{% elif i%2==1 and (i<2*countRest) %}
+					{% elif i%2==1 and (i<2*countRest+2) %}
 					<button style="background-color:rgb(226, 42, 42); color:rgb(238, 218, 218)"><i class="fa fa-arrow-left"></i></button>
 					
 					{% else %}
@@ -204,6 +204,7 @@ function loadApp() {
 		let active_page_index = parseInt(activePageIndexJson);
 			if (active_page_index>0)
 			{
+				//alert(`ACTIVE PAGE INDEX: ${active_page_index}`);
 			// Turn to the page 10
 			$(".flipbook").turn("page", active_page_index);
 				//(`ACTIVE PAGE INDEX:${active_page_index}`);
