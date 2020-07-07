@@ -77,11 +77,10 @@ body {
 }
 
 
-.text_caratteristiche {
+.altri_quartieri  {
   position: absolute;
-  top: 173px;
   bottom: 10px;
-  left: 15px;
+  left: 0px;
   right: 10px;
   line-height: 25px;
   //font-family: 'Indie Flower';
@@ -165,18 +164,25 @@ body {
 
        <div class="indice unselectable" spellcheck="false" >
           {% block indice %}
+          <div style="height: 375px; width: 400px; overflow:auto;" >
           {%for i in range(countRest) %}
 				 <li>
-           <button onclick="setActivePageIndex({{i}})" 
+           <button onclick="setActivePageIndex({{ rist[i].id }},{{i}})" 
            type="button" style="color: #000000; margin:0px;" class="btn btn-link">
             {{rist[i].name}}</button>
 				 </li>
 				{% endfor %}
-            
+      </div>
         {% endblock %}
     </div>
 
-    
+    <div class="altri_quartieri unselectable" spellcheck="false" >
+      <p style="text-align: center;">
+        <button onclick="window.location.href='/ristoranti/'" 
+           type="button" style="color: #000000; margin-left:-40px;" class="btn btn-link">
+            Visita i ristoranti degli altri quartieri</button>
+      </p>
+</div>
 
 
     </div>
@@ -203,13 +209,21 @@ body {
 <script type="text/javascript">
 // Shorthand for $( document ).ready()
 
-function setActivePageIndex(index)
+function setActivePageIndex(rist_id, index)
 {
   alert(`Setting active page index:${index}`)
+  $.ajax({
+				url: "/set_active_restaurant/",
+				type: 'POST',
+				data: { 'zone_id': `{{ quartiere.id }}`,
+						'page_index' : index+2,
+                        }
+			}).done(function(done) {
+			// ricarico la pagina del ristorante corrente
+      document.location.href=`/inner_book2/${ {{quartiere.id}} }/`;
+			});
 }
 $(function() {
-	
-  alert( "ready!" );
 });
 </script>
 </body>

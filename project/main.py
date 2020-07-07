@@ -68,8 +68,13 @@ def zone_restaurants_index(zone_id):
     zone = get_zone(zone_id)
     if quartiere==None:
         abort(404)
-    r = get_restaurants_by_zone(zone_id)
-    return render_template("index_of_contents_restaurants_left.html",  countRest = len(r), rist=r, zone=zone)
+    rist = get_restaurants_by_zone(zone_id)
+    rist_info = []
+    for r in rist:
+        rist_info.append({"id": r.id, "name":r.name, 
+        "lat" : r.latitude, "lon" : r.longitude})
+    #return render_template("index_of_contents_restaurants_left.html",  countRest = len(rist), rist=r, quartiere=zone)
+    return render_template("index_of_contents_restaurants_right.html",  countRest = len(rist), rist=rist_info, quartiere=zone)
 
 @main.route("/ristoranti2/<int:zone_id>/<int:n>/")
 def restaurants2(zone_id,n):
